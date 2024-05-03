@@ -1,0 +1,23 @@
+[
+    {
+        "id": 3,
+        "name": "Lion king",
+        "price": 250
+    },
+    {
+        "id": 5,
+        "name": "The foundation",
+        "price": 550
+    },
+    {
+        "id": 6,
+        "name": "Devinchi Code",
+        "price": 650
+    },
+    {
+        "name": "Narnia",
+        "price": "44",
+        "id": 7,
+        "imageName": "69bb8e87-c2a7-48b0-97a7-4c239143f131.jpg"
+    }
+]

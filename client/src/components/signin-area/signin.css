@@ -1,0 +1,51 @@
+.signinContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+.signinForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.formInput {
+    border: none;
+    border-bottom: 2px solid greenyellow;
+    color: greenyellow;
+    font-size: large;
+    width: 300px;
+    background-color: transparent;
+    outline: none;
+}
+
+.formButton {
+    border: 2px solid greenyellow;
+    color: greenyellow;
+    font-size: large;
+    font-weight: 600;
+    width: 300px;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+}
+
+.formButton:hover {
+    border: 2px solid greenyellow;
+    color: black;
+    background-color: greenyellow;
+}
+
+.pageLink{
+    color: greenyellow;
+    cursor: pointer;
+}
+
+.pageLink:hover{
+    color: #fff;
+}
