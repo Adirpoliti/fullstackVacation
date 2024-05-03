@@ -1,0 +1,14 @@
+{
+    "name": "rest-api-layers",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "start": "nodemon --exec ts-node src/app.ts"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+    },
+    "dependencies": {
+    }
+}
