@@ -6,14 +6,13 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  Link,
   OutlinedInput,
   Typography,
   styled,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import "../../index.css";
+import "../../../index.css";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -33,7 +32,8 @@ const AnotherMainContainer = styled(Box)({
   height: "520px",
   width: "400px",
   borderRadius: "15px",
-  padding: "10px",
+  // padding: "10px",
+  boxSizing: "border-box"
 });
 
 const LoginTitle = styled(Typography)({
@@ -44,7 +44,7 @@ const LoginTitle = styled(Typography)({
 });
 
 const LoginInput = styled(OutlinedInput)({
-  width: "270px",
+  width: "100%",
   height: "45px",
   fontFamily: "tripSans",
   marginBottom: "20px",
@@ -65,7 +65,7 @@ const LoginBtn = styled(Button)({
   fontWeight: "600",
   fontSize: "15px",
   textAlign: "center",
-  width: "270px",
+  width: "100%",
   height: "45px",
   marginBottom: "30px",
   "&:hover": {
@@ -78,10 +78,11 @@ const StyledDivider = styled(Divider)({
   marginBottom: "5px",
 });
 
-const RegisterLink = styled(Link)({
+const RegisterLink = styled(Typography)({
   color: "black",
   textDecoration: "none",
   cursor: "pointer",
+  fontFamily: "tripSans",
   "&:hover": {
     textDecoration: "underline",
   },
@@ -92,13 +93,22 @@ const imgStyle = {
   height: "109px",
 };
 
-export const LoginPage = () => {
+interface LoginProp {
+  onClick: () => void;
+}
+
+export const LoginPage = ({ onClick }: LoginProp) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
+  };
+
+  const handleLoginForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("hello");
   };
 
   return (
@@ -109,32 +119,41 @@ export const LoginPage = () => {
             <img alt="logo" style={imgStyle} src="/Assets/Images/logo.png" />
             <LoginTitle>Login</LoginTitle>
           </Box>
-          <Box>
-            <InputTitle>Email</InputTitle>
-            <LoginInput />
-          </Box>
-          <Box>
-            <InputTitle>Password</InputTitle>
-            <LoginInput
-              type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </Box>
-          <LoginBtn>Login</LoginBtn>
+          <form onSubmit={(e) => handleLoginForm(e)}>
+            <Box>
+              <InputTitle>Email</InputTitle>
+              <LoginInput
+                inputProps={{
+                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
+                }}
+              />
+            </Box>
+            <Box>
+              <InputTitle>Password</InputTitle>
+              <LoginInput
+                type={showPassword ? "text" : "password"}
+                inputProps={{
+                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
+                }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </Box>
+            <LoginBtn type="submit">Login</LoginBtn>
+          </form>
           <Box>
             <StyledDivider>Not a member?</StyledDivider>
-            <RegisterLink href="">
+            <RegisterLink onClick={onClick}>
               <span style={{ fontWeight: "bold" }}>Join</span> to unlock the
               best of PRTVacations
             </RegisterLink>
