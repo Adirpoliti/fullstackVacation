@@ -29,6 +29,7 @@ export type UserType = {
     password: string;
     role: RolesType;
 }
+
 export const userSchema = new mongoose.Schema({
     _id: ObjectId,
     firstName: String,
@@ -36,7 +37,7 @@ export const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     role: String,
-});
+})
 
 
 export const UserCredentialsValidationSchema = joi.object({

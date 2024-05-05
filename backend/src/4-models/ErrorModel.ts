@@ -43,7 +43,6 @@ export const RequestTimeoutError = (msg: string) => {
     throw errorObj;
 }
 
-
 export const ConflictError = (msg: string) => {
     const errorObj: ErrorType = { message: `${msg} `, status: 409 }
     throw errorObj;
