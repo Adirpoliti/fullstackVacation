@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 import { userSchema } from "../4-models/User-Model";
+import { vacationSchema } from "../4-models/Vacation-Model";
 
 export const mangooseConnection = mongoose.connect('mongodb+srv://adirpoliti:RsveLODUOQ52kHo2@vacations.al16hwc.mongodb.net/',
     { useNewUrlParser: true, useUnifiedTopology: true })
@@ -9,4 +10,6 @@ export const mangooseConnection = mongoose.connect('mongodb+srv://adirpoliti:Rsv
     .catch((error) => {
         console.error('Error connecting to MongoDB Atlas:', error);
     });
+
 export const User = mongoose.model('users', userSchema);
+export const Vacation = mongoose.model('vacations', vacationSchema);
