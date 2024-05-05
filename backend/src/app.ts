@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from "cors";
+import expressFileUpload from "express-fileupload"
 import { catchAll } from './3-middleware/catch-all';
 import { loggedRequest } from "./3-middleware/log-request";
 import userController from './6-controllers/user-controller'
@@ -10,6 +11,7 @@ const port = 3001;
 const server = express()
 
 server.use(express.json())
+server.use(expressFileUpload());
 
 server.use(cors({
     origin: '*', 

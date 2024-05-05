@@ -15,8 +15,9 @@ router.get('/vacations', async (req: Request, res: Response, next: NextFunction)
 
 router.post('/vacations/new', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const newVacation = req.body as VacationType
-        // req.body.data.imageFile = req.files?.imageFile
+        req.body.imageFile = req.files?.imageFile;
+        const newVacation: VacationType = req.body;
+        console.log(newVacation)
         const addedVacation = await addVacationLogic(newVacation);
         res.status(201).json(addedVacation);
     } catch (err) {
