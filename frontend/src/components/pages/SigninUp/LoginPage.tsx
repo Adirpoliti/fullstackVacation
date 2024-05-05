@@ -32,7 +32,8 @@ const AnotherMainContainer = styled(Box)({
   height: "520px",
   width: "400px",
   borderRadius: "15px",
-  padding: "10px",
+  // padding: "10px",
+  boxSizing: "border-box"
 });
 
 const LoginTitle = styled(Typography)({
@@ -43,7 +44,7 @@ const LoginTitle = styled(Typography)({
 });
 
 const LoginInput = styled(OutlinedInput)({
-  width: "270px",
+  width: "100%",
   height: "45px",
   fontFamily: "tripSans",
   marginBottom: "20px",
@@ -64,7 +65,7 @@ const LoginBtn = styled(Button)({
   fontWeight: "600",
   fontSize: "15px",
   textAlign: "center",
-  width: "270px",
+  width: "100%",
   height: "45px",
   marginBottom: "30px",
   "&:hover": {
@@ -123,7 +124,7 @@ export const LoginPage = ({ onClick }: LoginProp) => {
               <InputTitle>Email</InputTitle>
               <LoginInput
                 inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px white inset" },
+                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
                 }}
               />
             </Box>
@@ -132,7 +133,7 @@ export const LoginPage = ({ onClick }: LoginProp) => {
               <LoginInput
                 type={showPassword ? "text" : "password"}
                 inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px white inset" },
+                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
                 }}
                 endAdornment={
                   <InputAdornment position="end">

@@ -36,19 +36,25 @@ const AnotherMainContainer = styled(Box)({
   height: "670px",
   width: "400px",
   borderRadius: "15px",
-  padding: "10px",
-  overflow: "hidden",
+  padding: "40px",
+  boxSizing: "border-box"
 });
 
-const LoginTitle = styled(Typography)({
+const RegisterTitle = styled(Typography)({
   fontWeight: "600",
   fontSize: "30px",
   textAlign: "center",
   fontFamily: "tripSans",
 });
 
-const LoginInput = styled(OutlinedInput)({
-  width: "270px",
+const RegisterInput = styled(OutlinedInput)({
+  width: "100%",
+  height: "45px",
+  fontFamily: "tripSans",
+  marginBottom: "20px",
+});
+
+const FNRegisterInput = styled(OutlinedInput)({
   height: "45px",
   fontFamily: "tripSans",
   marginBottom: "20px",
@@ -63,19 +69,26 @@ const InputTitle = styled(InputLabel)({
   marginBottom: "1px",
 });
 
-const LoginBtn = styled(Button)({
+const RegisterBtn = styled(Button)({
   backgroundColor: "black",
   color: "white",
   fontFamily: "tripSans",
   fontWeight: "600",
   fontSize: "15px",
   textAlign: "center",
-  width: "270px",
+  width: "100%",
   height: "45px",
   marginBottom: "30px",
   "&:hover": {
     color: "black",
   },
+});
+
+const FullNameBox = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: "10px",
 });
 
 const StyledDivider = styled(Divider)({
@@ -98,11 +111,11 @@ const imgStyle = {
   height: "109px",
 };
 
-interface LoginProp {
+interface RegisterProp {
   onClick: () => void;
 }
 
-export const RegisterPage = ({ onClick }: LoginProp) => {
+export const RegisterPage = ({ onClick }: RegisterProp) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const { register, handleSubmit, reset } =
@@ -130,13 +143,9 @@ export const RegisterPage = ({ onClick }: LoginProp) => {
     userRegistrationScheme.validate(userCreds).then(async () => {
       console.log(userCreds);
       await registerService(userCreds);
-    //   reset();
+      reset();
     });
   };
-
-  //   const handleRegisterForm = (userCreds: UserRegisterCredentialsType) => {
-  //     console.log(userCreds);
-  //   };
 
   return (
     <>
@@ -144,42 +153,44 @@ export const RegisterPage = ({ onClick }: LoginProp) => {
         <AnotherMainContainer>
           <Box style={{ marginBottom: "20px" }}>
             <img alt="logo" style={imgStyle} src="/Assets/Images/logo.png" />
-            <LoginTitle>Register</LoginTitle>
+            <RegisterTitle>Register</RegisterTitle>
           </Box>
           <form onSubmit={handleSubmit(validateUser)}>
-            <Box>
-              <InputTitle>First Name</InputTitle>
-              <LoginInput
-                inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px white inset" },
-                }}
-                {...register("firstName", { required: true })}
-              />
-            </Box>
-            <Box>
-              <InputTitle>Last Name</InputTitle>
-              <LoginInput
-                inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px white inset" },
-                }}
-                {...register("lastName", { required: true })}
-              />
-            </Box>
+            <FullNameBox>
+              <Box>
+                <InputTitle>First Name</InputTitle>
+                <FNRegisterInput
+                  inputProps={{
+                    style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
+                  }}
+                  {...register("firstName", { required: true })}
+                />
+              </Box>
+              <Box>
+                <InputTitle>Last Name</InputTitle>
+                <FNRegisterInput
+                  inputProps={{
+                    style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
+                  }}
+                  {...register("lastName", { required: true })}
+                />
+              </Box>
+            </FullNameBox>
             <Box>
               <InputTitle>Email</InputTitle>
-              <LoginInput
+              <RegisterInput
                 inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px white inset" },
+                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
                 }}
                 {...register("email", { required: true })}
               />
             </Box>
             <Box>
               <InputTitle>Password</InputTitle>
-              <LoginInput
+              <RegisterInput
                 type={showPassword ? "text" : "password"}
                 inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px white inset" },
+                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
                 }}
                 {...register("password", { required: true })}
                 endAdornment={
@@ -196,7 +207,7 @@ export const RegisterPage = ({ onClick }: LoginProp) => {
                 }
               />
             </Box>
-            <LoginBtn type="submit">Register</LoginBtn>
+            <RegisterBtn type="submit">Register</RegisterBtn>
           </form>
           <Box>
             <StyledDivider>Already a memeber?</StyledDivider>
