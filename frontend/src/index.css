@@ -5,6 +5,7 @@
 
 body {
   margin: 0;
+  height: 100vh;
   font-family: tripSans;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
