@@ -20,7 +20,6 @@ const MainContainer = styled(Box)({
   alignItems: "center",
   backgroundColor: "#191919",
   height: "100vh",
-  width: "100vw",
 });
 
 const AnotherMainContainer = styled(Box)({
