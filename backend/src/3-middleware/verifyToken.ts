@@ -14,7 +14,7 @@ export const verifyTokenUser = (request: Request): Promise<boolean> => {
             if (!token) {
                 resolve(false);
                 return;
-            } const velidat = jwt.verify(token, userSecret, (err) => {
+            } jwt.verify(token, userSecret, (err) => {
                 if (err) {
                     resolve(false);
                     return;
