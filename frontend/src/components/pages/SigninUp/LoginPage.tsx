@@ -13,6 +13,11 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "../../../index.css";
+import { object, string } from "yup";
+import { loginService } from "../../../services/loginService";
+import { UserLoginCredentialsType } from "../../../types/UserType";
+import { useForm } from "react-hook-form";
+
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -99,6 +104,8 @@ interface LoginProp {
 
 export const LoginPage = ({ onClick }: LoginProp) => {
   const [showPassword, setShowPassword] = useState(false);
+  const { register, handleSubmit, reset } =
+    useForm<UserLoginCredentialsType>();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -106,9 +113,22 @@ export const LoginPage = ({ onClick }: LoginProp) => {
     event.preventDefault();
   };
 
-  const handleLoginForm = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("hello");
+  const passwordRegexPattern =
+    /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,32}$/;
+  const emailRegexPattern =
+    /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
+
+  let userLoginScheme = object({
+    email: string().required().min(12).max(254).matches(emailRegexPattern),
+    password: string().required().min(8).max(32).matches(passwordRegexPattern),
+  });
+
+  const validateUser = (userCreds: UserLoginCredentialsType) => {
+    userLoginScheme.validate(userCreds).then(async () => {
+      console.log(userCreds);
+      await loginService(userCreds);
+      reset();
+    });
   };
 
   return (
@@ -119,13 +139,14 @@ export const LoginPage = ({ onClick }: LoginProp) => {
             <img alt="logo" style={imgStyle} src="/Assets/Images/logo.png" />
             <LoginTitle>Login</LoginTitle>
           </Box>
-          <form onSubmit={(e) => handleLoginForm(e)}>
+          <form onSubmit={handleSubmit(validateUser)}>
             <Box>
               <InputTitle>Email</InputTitle>
               <LoginInput
                 inputProps={{
                   style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
                 }}
+                {...register("email", { required: true })}
               />
             </Box>
             <Box>
@@ -135,6 +156,7 @@ export const LoginPage = ({ onClick }: LoginProp) => {
                 inputProps={{
                   style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
                 }}
+                {...register("password", { required: true })}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
