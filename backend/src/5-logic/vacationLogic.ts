@@ -1,7 +1,9 @@
+import { Request } from "express"
 import { Vacation } from "../2-utils/dal";
 import { UnauthorizedError } from "../4-models/ErrorModel";
 import { VacationType, validateVacation } from "../4-models/Vacation-Model";
 import { v4 as uuid } from "uuid";
+import { getCurrentUser } from "./getCurrentUserLogic";
 
 export const getAllVacationsLogic = async () => {
     try {
@@ -12,9 +14,10 @@ export const getAllVacationsLogic = async () => {
     }
 }
 
-export const addVacationLogic = async (newVacation: VacationType): Promise<VacationType | string> => {
-    validateVacation(newVacation);
-    try { 
+export const addVacationLogic = async (req: Request, newVacation: VacationType): Promise<VacationType | string> => {
+    try {
+        await getCurrentUser(req)
+        validateVacation(newVacation)
         if (newVacation.imageFile) {
             const extension = newVacation.imageFile.name.substring(newVacation.imageFile.name.lastIndexOf("."));
             newVacation.imageName = uuid() + extension
@@ -22,7 +25,8 @@ export const addVacationLogic = async (newVacation: VacationType): Promise<Vacat
             delete newVacation.imageFile
         }
         const addedVacation = await new Vacation({
-            location: newVacation.location,
+            locationCountry: newVacation.locationCountry,
+            locationCity: newVacation.locationCity,
             description: newVacation.description,
             startDate: newVacation.startDate,
             endDate: newVacation.endDate,
@@ -33,6 +37,6 @@ export const addVacationLogic = async (newVacation: VacationType): Promise<Vacat
         console.log("Vacation saved succesfuly !");
         return addedVacation
     } catch (error) {
-        UnauthorizedError(error.message);
+        throw error;
     }
 }

@@ -7,7 +7,8 @@ import { UploadedFile } from 'express-fileupload';
 export type VacationType = {
     save(): unknown;
     _id: ObjectId;
-    location: string;
+    locationCountry: string;
+    locationCity: string;
     description: string;
     startDate: Date;
     endDate: Date;
@@ -17,7 +18,8 @@ export type VacationType = {
 }
 
 export const vacationSchema = new mongoose.Schema({
-    location: String,
+    locationCountry: String,
+    locationCity: String,
     description: String,
     startDate: Date,
     endDate: Date,
@@ -26,12 +28,13 @@ export const vacationSchema = new mongoose.Schema({
 })
 
 export const VacationValidationSchema = joi.object({
-    location: joi.string().min(2).required(),
+    locationCountry: joi.string().min(2).required(),
+    locationCity: joi.string().min(2).required(),
     description: joi.string().min(2).required(),
-    price: joi.number().positive().integer().required(),
+    price: joi.number().positive().max(10000).integer().required(),
     startDate: joi.date().greater("now").less(joi.ref('endDate')).required(),
     endDate: joi.date().greater("now").required(),
-    imageFile: joi.object().optional(),
+    imageFile: joi.object().required(),
     imageName: joi.string().forbidden()
 })
 
