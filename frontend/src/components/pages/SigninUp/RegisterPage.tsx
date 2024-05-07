@@ -80,6 +80,7 @@ const RegisterBtn = styled(Button)({
   marginBottom: "30px",
   "&:hover": {
     color: "black",
+    border: "1px solid black"
   },
 });
 
