@@ -3,15 +3,13 @@ import { LoginPage } from "./LoginPage";
 import { RegisterPage } from "./RegisterPage";
 
 export const Sign = () => {
-  // const [currentForm, setCurrentForm] = useState<string>("login");
-  const [abc, setAbc] = useState<boolean>(true);
+  const [toggleForm, setToggleForm] = useState<boolean>(true);
 
   const handleCard = () => {
-    setAbc(!abc);
-    console.log(abc);
+    setToggleForm(!toggleForm);
   };
 
-  return abc === true ? (
+  return toggleForm === true ? (
     <LoginPage onClick={handleCard} />
   ) : (
     <RegisterPage onClick={handleCard} />
