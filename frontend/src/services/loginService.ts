@@ -5,9 +5,9 @@ import { apiConfig } from "./api/apiConfig";
 export const loginService = (userCreds: UserLoginCredentialsType) => {
   console.log(userCreds);
 
-  axios
+  return axios
     .post(apiConfig.apiLoginPath, userCreds)
-    .then((res) => console.log(res))
+    .then((res) => res.data)
     .catch((err) => {
       console.log(err);
     });

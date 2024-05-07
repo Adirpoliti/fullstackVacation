@@ -17,6 +17,8 @@ import { object, string } from "yup";
 import { loginService } from "../../../services/loginService";
 import { UserLoginCredentialsType } from "../../../types/UserType";
 import { useForm } from "react-hook-form";
+import { useDispatch } from 'react-redux';
+import { setInfo } from '../../../actions';
 
 
 const MainContainer = styled(Box)({
@@ -104,9 +106,14 @@ interface LoginProp {
 
 export const LoginPage = ({ onClick }: LoginProp) => {
   const [showPassword, setShowPassword] = useState(false);
+
   const { register, handleSubmit, reset } =
     useForm<UserLoginCredentialsType>();
+
+  const dispatch = useDispatch();
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -123,12 +130,20 @@ export const LoginPage = ({ onClick }: LoginProp) => {
     password: string().required().min(8).max(32).matches(passwordRegexPattern),
   });
 
-  const validateUser = (userCreds: UserLoginCredentialsType) => {
-    userLoginScheme.validate(userCreds).then(async () => {
-      console.log(userCreds);
-      await loginService(userCreds);
+  const validateUser = async (userCreds: UserLoginCredentialsType) => {
+    try {
+      await userLoginScheme.validate(userCreds)
+      const token = await loginService(userCreds);
+      console.log(token)
+      dispatch(setInfo(token));
       reset();
-    });
+    } catch (error) {
+      if ((error as { name: string }).name === 'ValidationError') {
+        console.log("Validation failed:", (error as { errors: string[] }).errors);
+      } else {
+        console.log("Login failed:", error);
+      }
+    }
   };
 
   return (
