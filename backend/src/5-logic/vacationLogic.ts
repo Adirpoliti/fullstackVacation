@@ -1,7 +1,7 @@
 import { Request } from "express"
 import { Vacation } from "../2-utils/dal";
-import { UnauthorizedError } from "../4-models/ErrorModel";
-import { VacationType, validateVacation } from "../4-models/Vacation-Model";
+import { ResourceNotFoundError, UnauthorizedError } from "../4-models/ErrorModel";
+import { VacationType, validateVacation, validateVacationUpdate } from "../4-models/Vacation-Model";
 import { v4 as uuid } from "uuid";
 import { getCurrentUser } from "./getCurrentUserLogic";
 
@@ -39,4 +39,36 @@ export const addVacationLogic = async (req: Request, newVacation: VacationType):
     } catch (error) {
         throw error;
     }
+}
+
+export const editVacationLogic = async (req: Request, updatedVacation: VacationType): Promise<VacationType | string> => {
+    await getCurrentUser(req)
+    validateVacationUpdate(updatedVacation);
+    const findVacation = await Vacation.findOne({ _id: updatedVacation._id }) as VacationType
+    if (!findVacation) ResourceNotFoundError("Resource not found, try something else");
+    if (updatedVacation.imageFile) {
+        const extension = updatedVacation.imageFile.name.substring(updatedVacation.imageFile.name.lastIndexOf("."));
+        updatedVacation.imageName = uuid() + extension
+        await updatedVacation.imageFile.mv("./src/1-Assets/images/" + updatedVacation.imageName);
+        delete updatedVacation.imageFile
+    }
+    return new Promise(async (resolve, reject) => {
+        try {
+            const filter = { _id: findVacation._id }
+            const vacationUpdate = {
+                "locationCountry": updatedVacation.locationCountry,
+                "locationCity": updatedVacation.locationCity,
+                "description": updatedVacation.description,
+                "price": updatedVacation.price,
+                "startDate": updatedVacation.startDate,
+                "endDate": updatedVacation.endDate,
+                "imageName": updatedVacation.imageName,
+            };
+            await Vacation.findOneAndUpdate(filter, vacationUpdate, { new: false })
+            resolve('Your details has been successfully updated')
+            return vacationUpdate;
+        } catch (error) {
+            reject(UnauthorizedError('Failed to updating profile user'))
+        }
+    })
 }
