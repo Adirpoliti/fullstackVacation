@@ -32,7 +32,7 @@ const AnotherMainContainer = styled(Box)({
   width: "400px",
   borderRadius: "15px",
   // padding: "10px",
-  boxSizing: "border-box"
+  boxSizing: "border-box",
 });
 
 const LoginTitle = styled(Typography)({
@@ -69,6 +69,7 @@ const LoginBtn = styled(Button)({
   marginBottom: "30px",
   "&:hover": {
     color: "black",
+    border: "1px solid black",
   },
 });
 
