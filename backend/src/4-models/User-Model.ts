@@ -28,6 +28,7 @@ export type UserType = {
     email: string;
     password: string;
     role: RolesType;
+    vacationsFollowed: ObjectId[];
 }
 
 export const userSchema = new mongoose.Schema({
@@ -37,6 +38,7 @@ export const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     role: String,
+    vacationsFollowed: [ObjectId],
 })
 
 
@@ -51,6 +53,7 @@ export const UserValidationSchema = joi.object({
     password: joi.string().required().min(8).max(32).regex(passwordRegexPattern),
     email: joi.string().required().min(12).max(254).regex(emailRegexPattern),
     role: joi.forbidden(),
+    vacationsFollowed: joi.forbidden(),
 })
 
 export const validateUser = (user: UserType) => {

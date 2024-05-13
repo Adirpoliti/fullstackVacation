@@ -5,12 +5,22 @@ import { VacationType, validateVacation, validateVacationUpdate } from "../4-mod
 import { v4 as uuid } from "uuid";
 import { getCurrentUser } from "./getCurrentUserLogic";
 
-export const getAllVacationsLogic = async () => {
+export const getAllVacationsLogic = async (req: Request) => {
     try {
+        await getCurrentUser(req)
         const vacations = await Vacation.find() as VacationType[];
         return vacations;
     } catch (error) {
         UnauthorizedError('Failed to fetch the vacations !');
+    }
+}
+
+export const getOneVacationLogic = async (id: string) => {
+    try {
+        const vacations = await Vacation.findOne({ _id: id }) as VacationType[];
+        return vacations;
+    } catch (error) {
+        ResourceNotFoundError(`Failed to find the vacation with id: ${id}!`);
     }
 }
 
@@ -67,6 +77,23 @@ export const editVacationLogic = async (req: Request, updatedVacation: VacationT
             await Vacation.findOneAndUpdate(filter, vacationUpdate, { new: false })
             resolve('Your details has been successfully updated')
             return vacationUpdate;
+        } catch (error) {
+            reject(UnauthorizedError('Failed to updating profile user'))
+        }
+    })
+}
+
+export const followVacationLogic = async (req: Request, vacationId:string) => {
+    const currentUser = await getCurrentUser(req)
+    return new Promise(async (resolve, reject) => {
+        try {
+            await Vacation.findByIdAndUpdate(
+                vacationId,
+                { $push: { usersFollowed: currentUser._id } },
+                { new: true },
+              )
+            resolve('Your details has been successfully updated')
+            return `${currentUser.firstName} is now following this vacation `;
         } catch (error) {
             reject(UnauthorizedError('Failed to updating profile user'))
         }

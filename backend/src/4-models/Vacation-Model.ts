@@ -15,6 +15,7 @@ export type VacationType = {
     price: number;
     imageFile: UploadedFile;
     imageName: string;
+    usersFollowed: ObjectId[];
 }
 
 export const vacationSchema = new mongoose.Schema({
@@ -25,6 +26,7 @@ export const vacationSchema = new mongoose.Schema({
     endDate: Date,
     price: Number,
     imageName: String,
+    usersFollowed: [ObjectId],
 })
 
 export const VacationValidationSchema = joi.object({
@@ -35,7 +37,8 @@ export const VacationValidationSchema = joi.object({
     startDate: joi.date().greater("now").less(joi.ref('endDate')).required(),
     endDate: joi.date().greater("now").required(),
     imageFile: joi.object().required(),
-    imageName: joi.string().forbidden()
+    imageName: joi.string().forbidden(),
+    usersFollowed: joi.string().forbidden()
 })
 
 export const VacationUpdateValidationSchema = joi.object({
@@ -47,7 +50,8 @@ export const VacationUpdateValidationSchema = joi.object({
     startDate: joi.date().greater("now").less(joi.ref('endDate')).required(),
     endDate: joi.date().greater("now").required(),
     imageFile: joi.object().optional(),
-    imageName: joi.string().forbidden()
+    imageName: joi.string().forbidden(),
+    usersFollowed: joi.string().forbidden()
 })
 
 export const validateVacation = (vacation: VacationType) => {
