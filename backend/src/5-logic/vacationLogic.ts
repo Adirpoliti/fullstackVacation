@@ -1,5 +1,5 @@
 import { Request } from "express"
-import { Vacation } from "../2-utils/dal";
+import { User, Vacation } from "../2-utils/dal";
 import { ResourceNotFoundError, UnauthorizedError } from "../4-models/ErrorModel";
 import { VacationType, validateVacation, validateVacationUpdate } from "../4-models/Vacation-Model";
 import { v4 as uuid } from "uuid";
@@ -83,19 +83,29 @@ export const editVacationLogic = async (req: Request, updatedVacation: VacationT
     })
 }
 
-export const followVacationLogic = async (req: Request, vacationId:string) => {
+export const followVacationLogic = async (req: Request, vacationId: string) => {
     const currentUser = await getCurrentUser(req)
-    return new Promise(async (resolve, reject) => {
-        try {
-            await Vacation.findByIdAndUpdate(
-                vacationId,
-                { $push: { usersFollowed: currentUser._id } },
-                { new: true },
-              )
-            resolve('Your details has been successfully updated')
-            return `${currentUser.firstName} is now following this vacation `;
-        } catch (error) {
-            reject(UnauthorizedError('Failed to updating profile user'))
+    const currentVacation = await Vacation.findOne({ _id: vacationId })
+    if (currentVacation.usersFollowed.find((id: any) => id !== currentUser._id)) {
+        return "user already follow this vacation"
+    } else {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await Vacation.findByIdAndUpdate(
+                    vacationId,
+                    { $push: { usersFollowed: currentUser._id } },
+                    { new: true },
+                )
+                await User.findByIdAndUpdate(
+                    currentUser._id,
+                    { $push: { vacationsFollowed: vacationId } },
+                    { new: true },
+                )
+                resolve(`${currentUser.firstName} is now following this vacation`)
+            } catch (error) {
+                reject(UnauthorizedError('Failed to updating profile user'))
+            }
         }
-    })
+        )
+    }
 }
