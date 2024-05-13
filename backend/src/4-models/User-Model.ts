@@ -23,6 +23,8 @@ export type UserCredentialsType = {
 }
 
 export type UserType = {
+    remove(): unknown;
+    save(): unknown;
     _id: ObjectId;
     firstName: string;
     lastName: string;

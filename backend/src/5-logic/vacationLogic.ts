@@ -83,11 +83,30 @@ export const editVacationLogic = async (req: Request, updatedVacation: VacationT
     })
 }
 
+
+
 export const followVacationLogic = async (req: Request, vacationId: string) => {
     const currentUser = await getCurrentUser(req)
     const currentVacation = await Vacation.findOne({ _id: vacationId })
     if (currentVacation.usersFollowed.find((id: any) => id !== currentUser._id)) {
-        return "user already follow this vacation"
+        return new Promise(async (resolve, reject) => {
+            try {
+                await Vacation.findByIdAndUpdate(
+                    vacationId,
+                    { $pull: { usersFollowed: currentUser._id } },
+                    { new: true },
+                )
+                await User.findByIdAndUpdate(
+                    currentUser._id,
+                    { $pull: { vacationsFollowed: vacationId } },
+                    { new: true },
+                )
+                resolve(`${currentUser.firstName} is no longer following this vacation`)
+            } catch (error) {
+                reject(UnauthorizedError('Failed to updating profile user'))
+            }
+        }
+        )
     } else {
         return new Promise(async (resolve, reject) => {
             try {

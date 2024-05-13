@@ -5,6 +5,7 @@ import { ValidationError } from "./ErrorModel";
 import { UploadedFile } from 'express-fileupload';
 
 export type VacationType = {
+    remove(): unknown;
     save(): unknown;
     _id: ObjectId;
     locationCountry: string;
