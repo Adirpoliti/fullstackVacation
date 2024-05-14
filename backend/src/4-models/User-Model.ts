@@ -9,6 +9,7 @@ const passwordRegexPattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).
 const emailRegexPattern = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/
 
 export interface UserContainer {
+    _id: ObjectId;
     user: any;
     firstName: any;
     lastName: any;
@@ -22,6 +23,8 @@ export type UserCredentialsType = {
 }
 
 export type UserType = {
+    remove(): unknown;
+    save(): unknown;
     _id: ObjectId;
     firstName: string;
     lastName: string;
@@ -58,10 +61,10 @@ export const UserValidationSchema = joi.object({
 
 export const validateUser = (user: UserType) => {
     const result = UserValidationSchema.validate(user);
-    if (result.error) ValidationError (result.error.message);
+    if (result.error) ValidationError(result.error.message);
 }
 
 export const validateUserCredentials = (userCredentials: UserCredentialsType) => {
     const result = UserCredentialsValidationSchema.validate(userCredentials);
-    if (result.error) ValidationError (result.error.message);
+    if (result.error) ValidationError(result.error.message);
 }
