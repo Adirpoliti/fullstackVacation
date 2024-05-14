@@ -12,7 +12,8 @@ export const getUserToken = (user: UserType): { token: string, registeredUser: {
         firstName: containerUser.user.firstName,
         lastName: containerUser.user.lastName,
         email: containerUser.user.email,
-        role: containerUser.user.role
+        role: containerUser.user.role,
+        _id: containerUser.user._id
     }
     return { token, registeredUser };
 }

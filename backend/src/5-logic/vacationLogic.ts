@@ -4,6 +4,7 @@ import { ResourceNotFoundError, UnauthorizedError } from "../4-models/ErrorModel
 import { VacationType, validateVacation, validateVacationUpdate } from "../4-models/Vacation-Model";
 import { v4 as uuid } from "uuid";
 import { getCurrentUser } from "./getCurrentUserLogic";
+import { UserType } from "../4-models/User-Model";
 
 export const getAllVacationsLogic = async (req: Request) => {
     try {
@@ -87,21 +88,22 @@ export const editVacationLogic = async (req: Request, updatedVacation: VacationT
 
 export const followVacationLogic = async (req: Request, vacationId: string) => {
     const currentUser = await getCurrentUser(req)
-    const currentVacation = await Vacation.findOne({ _id: vacationId })
-    if (currentVacation.usersFollowed.find((id: any) => id !== currentUser._id)) {
+    const loggedUser = await User.findOne({ email: currentUser.email }) as UserType
+    const currentVacation = await Vacation.findOne({ _id: vacationId }) as VacationType
+    if (currentVacation.usersFollowed.includes(loggedUser._id)) {
         return new Promise(async (resolve, reject) => {
             try {
                 await Vacation.findByIdAndUpdate(
                     vacationId,
-                    { $pull: { usersFollowed: currentUser._id } },
+                    { $pull: { usersFollowed: loggedUser._id } },
                     { new: true },
                 )
                 await User.findByIdAndUpdate(
-                    currentUser._id,
+                    loggedUser._id,
                     { $pull: { vacationsFollowed: vacationId } },
                     { new: true },
                 )
-                resolve(`${currentUser.firstName} is no longer following this vacation`)
+                resolve(`${loggedUser.firstName} is no longer following this vacation`)
             } catch (error) {
                 reject(UnauthorizedError('Failed to updating profile user'))
             }
@@ -112,15 +114,15 @@ export const followVacationLogic = async (req: Request, vacationId: string) => {
             try {
                 await Vacation.findByIdAndUpdate(
                     vacationId,
-                    { $push: { usersFollowed: currentUser._id } },
+                    { $push: { usersFollowed: loggedUser._id } },
                     { new: true },
                 )
                 await User.findByIdAndUpdate(
-                    currentUser._id,
+                    loggedUser._id,
                     { $push: { vacationsFollowed: vacationId } },
                     { new: true },
                 )
-                resolve(`${currentUser.firstName} is now following this vacation`)
+                resolve(`${loggedUser.firstName} is now following this vacation`)
             } catch (error) {
                 reject(UnauthorizedError('Failed to updating profile user'))
             }
