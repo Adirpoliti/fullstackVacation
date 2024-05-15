@@ -176,7 +176,6 @@ export const AddVacation = () => {
             </Box>
             <Box>
               <InputTitle>Cover image</InputTitle>
-              {/* <VacationInput type="file" /> */}
               <FileBtn
                 fullWidth
                 component="label"
