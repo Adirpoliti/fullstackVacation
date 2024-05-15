@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { VacationType } from "../../types/VacationType";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import {
@@ -17,7 +17,21 @@ const VacationPriceBtn = styled(Button)({
   width: "100%",
   cursor: "default",
   color: "black",
-  fontSize: "20px"
+  fontSize: "20px",
+  backgroundColor: "#29cedd"
+});
+
+const VacationStyledCard = styled(Card)({
+  height: "550px",
+  width: "345px",
+  backgroundColor: "#e8e8e8"
+});
+
+const CardsDescription = styled(Typography)({
+  height: "100px",
+  overflow: "scroll",
+  overflowX: "hidden",
+  overflowY: "hidden",
 })
 
 export const VacationCard = ({
@@ -29,11 +43,16 @@ export const VacationCard = ({
   price,
   imageName,
 }: VacationType) => {
+  const [isFavorite, setIsFavotite] = useState<boolean>(false)
 
-    const VacationStartDate = startDate.toString()
-    const VacationEndDate = endDate.toString()
+  const handleFavoriteClick = () => {
+    setIsFavotite(!isFavorite)
+  }
+
+  const VacationStartDate = startDate.toString();
+  const VacationEndDate = endDate.toString();
   return (
-    <Card sx={{ width: 345 }}>
+    <VacationStyledCard>
       <CardHeader
         title={locationCity + ", " + locationCountry}
         subheader={VacationStartDate + VacationEndDate}
@@ -41,20 +60,23 @@ export const VacationCard = ({
       <CardMedia
         component="img"
         height="194"
-        image={`../../../../backend/src/1-Assets/images/${imageName}`}
-        alt="Paella dish"
+        image={`http://localhost:3001/images/${imageName}`}
+        alt={locationCountry}
       />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <CardsDescription
+          variant="body2"
+          color="text.secondary"
+        >
           {description}
-        </Typography>
+        </CardsDescription>
         <VacationPriceBtn>${price}</VacationPriceBtn>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+        <IconButton onClick={handleFavoriteClick} aria-label="add to favorites">
+          <FavoriteIcon style={{color: isFavorite ? "red" : "#818181"}} />
         </IconButton>
       </CardActions>
-    </Card>
+    </VacationStyledCard>
   );
 };

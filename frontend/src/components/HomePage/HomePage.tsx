@@ -25,7 +25,6 @@ const CardsBox = styled(Box)({
 
 export const HomePage = () => {
   const [vacations, setVacations] = useState<VacationType[]>([]);
-  const now = new Date();
 
   useEffect(() => {
     const getAllVacations = async () => {
@@ -38,26 +37,27 @@ export const HomePage = () => {
       }
     };
 
-    // getAllVacations();
-  });
+    getAllVacations();
+  }, []);
 
   return (
     <HomeBox>
       <Navbar />
       <CardsBox>
-        {/* {vacations.map((v) => (
+        {vacations.map((v, i) => (
           <VacationCard
+            key={i}
             _id={""}
             locationCountry={v.locationCountry}
             locationCity={v.locationCity}
             description={v.description}
-            startDate={now}
-            endDate={now}
+            startDate={v.startDate}
+            endDate={v.endDate}
             price={v.price}
             imageName={v.imageName}
             usersFollowed={[]}
           />
-        ))} */}
+        ))}
       </CardsBox>
       <ChartsOverviewDemo />
     </HomeBox>
