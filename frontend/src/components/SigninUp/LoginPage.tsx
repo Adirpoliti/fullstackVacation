@@ -14,11 +14,11 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "../../../index.css";
 import { object, string } from "yup";
-import { loginService } from "../../../services/loginService";
-import { UserLoginCredentialsType } from "../../../types/UserType";
+import { loginService } from "../../services/loginService";
+import { UserLoginCredentialsType } from "../../types/UserType";
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
-import { setInfo } from '../../../actions';
+import { setInfo } from '../../actions';
 
 
 const MainContainer = styled(Box)({

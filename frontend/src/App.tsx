@@ -1,13 +1,13 @@
 import React from "react";
-import { Sign } from "./components/pages/SigninUp/Sign";
 import store from './store';
 import { Provider } from 'react-redux';
+import { HomePage } from "./components/HomePage/HomePage";
 
 function App() {
   return (
     <>
       <Provider store={store}>
-        <Sign />
+        <HomePage />
       </Provider>
     </>
   );

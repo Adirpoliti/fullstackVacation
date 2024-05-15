@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { vacationService } from '../../../services/getVacations';
-import { VacationType, VacationsType } from '../../../types/VacationType';
+import { VacationType, VacationsType } from '../../types/VacationType';
+import { vacationService } from '../../services/getVacations';
 
 export default function ChartsOverviewDemo() {
     const [vacations, setVacations] = useState<VacationsType[]>([]);
@@ -40,7 +40,7 @@ export default function ChartsOverviewDemo() {
 
     return (
         <BarChart
-            xAxis={[{ scaleType: 'band', data: [...seriesData] }]}
+            xAxis={[{ scaleType: 'band', data: [...seriesData], colorMap: { type: "piecewise",  thresholds: [new Date(2021, 1, 1), new Date(2023, 1, 1)],  colors: ['#29cedd'], } }]}
             series={[{ data: [...followers] }]}
             width={1000}
             height={600}

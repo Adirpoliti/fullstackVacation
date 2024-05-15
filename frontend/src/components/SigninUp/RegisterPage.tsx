@@ -14,9 +14,9 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "../../../index.css";
 import { useForm } from "react-hook-form";
-import { UserRegisterCredentialsType } from "../../../types/UserType";
+import { UserRegisterCredentialsType } from "../../types/UserType";
 import { object, string } from "yup";
-import { registerService } from "../../../services/registerService";
+import { registerService } from "../../services/registerService";
 
 const MainContainer = styled(Box)({
   display: "flex",
