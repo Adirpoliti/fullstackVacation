@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import "../../../index.css";
+import "../../index.css";
 import { useForm } from "react-hook-form";
 import { UserRegisterCredentialsType } from "../../types/UserType";
 import { object, string } from "yup";
