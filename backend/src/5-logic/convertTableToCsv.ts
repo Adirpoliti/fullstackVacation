@@ -1,4 +1,3 @@
-import { UploadedFile } from "express-fileupload";
 import fs from 'fs';
 import { Request } from "express"
 import { getCurrentUser } from "./getCurrentUserLogic";

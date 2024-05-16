@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { addVacationLogic, editVacationLogic, followVacationLogic, getAllVacationsLogic, getOneVacationLogic } from '../5-logic/vacationLogic';
+import { addVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllInactiveVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../5-logic/vacationLogic';
 import { VacationType } from '../4-models/Vacation-Model';
 import { verifyAdminMiddlewere } from '../3-middleware/verifyAdmin';
 
@@ -8,6 +8,24 @@ const router = express.Router()
 router.get('/vacations', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const response = await getAllVacationsLogic(req);
+        res.json(response);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/vacations/active', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const response = await getAllActiveVacationsLogic(req);
+        res.json(response);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/vacations/inactive', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const response = await getAllInactiveVacationsLogic(req);
         res.json(response);
     } catch (err) {
         next(err);
