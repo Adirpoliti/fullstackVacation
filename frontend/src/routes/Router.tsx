@@ -1,9 +1,9 @@
 import React from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import { Navbar } from "../NavBar/Navbar";
-import { HomePage } from "../HomePage/HomePage";
-import { AddVacation } from "../AddVacation/AddVacation";
-import { Sign } from "../SigninUp/Sign";
+import { Sign } from "../components/SigninUp/Sign";
+import { HomePage } from "../components/HomePage/HomePage";
+import { AddVacation } from "../components/AddVacation/AddVacation";
+import { Navbar } from "../components/NavBar/Navbar";
 
 const Layout = () => (
   <>

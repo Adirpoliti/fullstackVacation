@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../NavBar/Navbar";
 import { VacationCard } from "../VacationCard/VacationCard";
 import { Box, styled } from "@mui/material";
 import { vacationService } from "../../services/getVacations";
 import { VacationType } from "../../types/VacationType";
 import ChartsOverviewDemo from "../VacationChart/Chart";
+import { useAppSelector } from "../../App/hooks";
+import { selectUser } from "../../App/features/usersSlice";
 
 const HomeBox = styled(Box)({
   height: "100vh",
@@ -25,6 +26,8 @@ const CardsBox = styled(Box)({
 
 export const HomePage = () => {
   const [vacations, setVacations] = useState<VacationType[]>([]);
+  const user = useAppSelector(selectUser);
+  console.log(user);
 
   useEffect(() => {
     const getAllVacations = async () => {
@@ -40,7 +43,7 @@ export const HomePage = () => {
     getAllVacations();
   }, []);
 
-  return (
+  return user.token ? (
     <HomeBox>
       <CardsBox>
         {vacations.map((v, i) => (
@@ -60,5 +63,7 @@ export const HomePage = () => {
       </CardsBox>
       <ChartsOverviewDemo />
     </HomeBox>
+  ) : (
+    <Box>check check</Box>
   );
 };

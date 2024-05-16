@@ -17,9 +17,8 @@ import { object, string } from "yup";
 import { loginService } from "../../services/loginService";
 import { UserLoginCredentialsType } from "../../types/UserType";
 import { useForm } from "react-hook-form";
-import { useDispatch } from 'react-redux';
-import { setUser } from "../redux/features/usersSlice";
-
+import { setUser } from "../../App/features/usersSlice";
+import { useAppDispatch } from "../../App/hooks";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -107,10 +106,9 @@ interface LoginProp {
 export const LoginPage = ({ onClick }: LoginProp) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { register, handleSubmit, reset } =
-    useForm<UserLoginCredentialsType>();
+  const { register, handleSubmit, reset } = useForm<UserLoginCredentialsType>();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -132,14 +130,17 @@ export const LoginPage = ({ onClick }: LoginProp) => {
 
   const validateUser = async (userCreds: UserLoginCredentialsType) => {
     try {
-      await userLoginScheme.validate(userCreds)
+      await userLoginScheme.validate(userCreds);
       const user = await loginService(userCreds);
-      console.log(user)
+      console.log(user);
       dispatch(setUser(user));
       reset();
     } catch (error) {
-      if ((error as { name: string }).name === 'ValidationError') {
-        console.log("Validation failed:", (error as { errors: string[] }).errors);
+      if ((error as { name: string }).name === "ValidationError") {
+        console.log(
+          "Validation failed:",
+          (error as { errors: string[] }).errors
+        );
       } else {
         console.log("Login failed:", error);
       }
