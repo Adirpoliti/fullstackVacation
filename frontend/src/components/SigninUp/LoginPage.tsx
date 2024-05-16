@@ -18,7 +18,7 @@ import { loginService } from "../../services/loginService";
 import { UserLoginCredentialsType } from "../../types/UserType";
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
-import { setInfo } from '../../actions';
+import { setUser } from "../redux/features/usersSlice";
 
 
 const MainContainer = styled(Box)({
@@ -133,9 +133,9 @@ export const LoginPage = ({ onClick }: LoginProp) => {
   const validateUser = async (userCreds: UserLoginCredentialsType) => {
     try {
       await userLoginScheme.validate(userCreds)
-      const token = await loginService(userCreds);
-      console.log(token)
-      dispatch(setInfo(token));
+      const user = await loginService(userCreds);
+      console.log(user)
+      dispatch(setUser(user));
       reset();
     } catch (error) {
       if ((error as { name: string }).name === 'ValidationError') {

@@ -42,7 +42,6 @@ export const HomePage = () => {
 
   return (
     <HomeBox>
-      <Navbar />
       <CardsBox>
         {vacations.map((v, i) => (
           <VacationCard
