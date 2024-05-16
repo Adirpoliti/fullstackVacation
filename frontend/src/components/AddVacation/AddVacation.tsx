@@ -11,7 +11,7 @@ import {
 // import { useForm } from "react-hook-form";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import "../../../index.css";
+import "../../index.css";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -176,7 +176,6 @@ export const AddVacation = () => {
             </Box>
             <Box>
               <InputTitle>Cover image</InputTitle>
-              {/* <VacationInput type="file" /> */}
               <FileBtn
                 fullWidth
                 component="label"

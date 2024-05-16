@@ -7,12 +7,14 @@ import csvController from './6-controllers/csv-controller';
 import userController from './6-controllers/user-controller'
 import vacationController from './6-controllers/vacation-controller'
 import versionController from './6-controllers/version-controller';
+import path from 'path';
 
 const port = 3001;
 const server = express()
 
 server.use(express.json())
 server.use(expressFileUpload());
+server.use('/images', express.static(path.join(__dirname, '1-Assets/images')));
 
 server.use(cors({
     origin: '*', 

@@ -1,15 +1,14 @@
 import React from "react";
-import { Sign } from "./components/pages/SigninUp/Sign";
-import store from './store';
 import { Provider } from 'react-redux';
+import { RouterProvider } from "react-router-dom";
+import store from "./App/store";
+import router from "./routes/Router";
 
 function App() {
   return (
-    <>
-      <Provider store={store}>
-        <Sign />
-      </Provider>
-    </>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   );
 }
 

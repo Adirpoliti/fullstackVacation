@@ -12,14 +12,11 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import "../../../index.css";
-import { object, string } from "yup";
-import { loginService } from "../../../services/loginService";
-import { UserLoginCredentialsType } from "../../../types/UserType";
+import "../../index.css";
 import { useForm } from "react-hook-form";
-import { useDispatch } from 'react-redux';
-import { setInfo } from '../../../actions';
-
+import { UserRegisterCredentialsType } from "../../types/UserType";
+import { object, string } from "yup";
+import { registerService } from "../../services/registerService";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -35,22 +32,28 @@ const AnotherMainContainer = styled(Box)({
   justifyContent: "center",
   alignItems: "center",
   backgroundColor: "#fafafa",
-  height: "520px",
+  height: "670px",
   width: "400px",
   borderRadius: "15px",
-  // padding: "10px",
-  boxSizing: "border-box",
+  padding: "40px",
+  boxSizing: "border-box"
 });
 
-const LoginTitle = styled(Typography)({
+const RegisterTitle = styled(Typography)({
   fontWeight: "600",
   fontSize: "30px",
   textAlign: "center",
   fontFamily: "tripSans",
 });
 
-const LoginInput = styled(OutlinedInput)({
+const RegisterInput = styled(OutlinedInput)({
   width: "100%",
+  height: "45px",
+  fontFamily: "tripSans",
+  marginBottom: "20px",
+});
+
+const FNRegisterInput = styled(OutlinedInput)({
   height: "45px",
   fontFamily: "tripSans",
   marginBottom: "20px",
@@ -62,9 +65,10 @@ const InputTitle = styled(InputLabel)({
   fontSize: "15px",
   textAlign: "left",
   fontFamily: "tripSans",
+  marginBottom: "1px",
 });
 
-const LoginBtn = styled(Button)({
+const RegisterBtn = styled(Button)({
   backgroundColor: "black",
   color: "white",
   fontFamily: "tripSans",
@@ -76,8 +80,15 @@ const LoginBtn = styled(Button)({
   marginBottom: "30px",
   "&:hover": {
     color: "black",
-    border: "1px solid black",
+    border: "1px solid black"
   },
+});
+
+const FullNameBox = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: "10px",
 });
 
 const StyledDivider = styled(Divider)({
@@ -100,19 +111,15 @@ const imgStyle = {
   height: "109px",
 };
 
-interface LoginProp {
+interface RegisterProp {
   onClick: () => void;
 }
 
-export const LoginPage = ({ onClick }: LoginProp) => {
+export const RegisterPage = ({ onClick }: RegisterProp) => {
   const [showPassword, setShowPassword] = useState(false);
-
-  const { register, handleSubmit, reset } =
-    useForm<UserLoginCredentialsType>();
-
-  const dispatch = useDispatch();
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const { register, handleSubmit, reset } =
+    useForm<UserRegisterCredentialsType>();
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -125,25 +132,19 @@ export const LoginPage = ({ onClick }: LoginProp) => {
   const emailRegexPattern =
     /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
 
-  let userLoginScheme = object({
+  let userRegistrationScheme = object({
+    firstName: string().required().min(2).max(12),
+    lastName: string().required().min(2).max(20),
     email: string().required().min(12).max(254).matches(emailRegexPattern),
     password: string().required().min(8).max(32).matches(passwordRegexPattern),
   });
 
-  const validateUser = async (userCreds: UserLoginCredentialsType) => {
-    try {
-      await userLoginScheme.validate(userCreds)
-      const token = await loginService(userCreds);
-      console.log(token)
-      dispatch(setInfo(token));
+  const validateUser = (userCreds: UserRegisterCredentialsType) => {
+    userRegistrationScheme.validate(userCreds).then(async () => {
+      console.log(userCreds);
+      await registerService(userCreds);
       reset();
-    } catch (error) {
-      if ((error as { name: string }).name === 'ValidationError') {
-        console.log("Validation failed:", (error as { errors: string[] }).errors);
-      } else {
-        console.log("Login failed:", error);
-      }
-    }
+    });
   };
 
   return (
@@ -152,12 +153,32 @@ export const LoginPage = ({ onClick }: LoginProp) => {
         <AnotherMainContainer>
           <Box style={{ marginBottom: "20px" }}>
             <img alt="logo" style={imgStyle} src="/Assets/Images/logo.png" />
-            <LoginTitle>Login</LoginTitle>
+            <RegisterTitle>Register</RegisterTitle>
           </Box>
           <form onSubmit={handleSubmit(validateUser)}>
+            <FullNameBox>
+              <Box>
+                <InputTitle>First Name</InputTitle>
+                <FNRegisterInput
+                  inputProps={{
+                    style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
+                  }}
+                  {...register("firstName", { required: true })}
+                />
+              </Box>
+              <Box>
+                <InputTitle>Last Name</InputTitle>
+                <FNRegisterInput
+                  inputProps={{
+                    style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
+                  }}
+                  {...register("lastName", { required: true })}
+                />
+              </Box>
+            </FullNameBox>
             <Box>
               <InputTitle>Email</InputTitle>
-              <LoginInput
+              <RegisterInput
                 inputProps={{
                   style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
                 }}
@@ -166,7 +187,7 @@ export const LoginPage = ({ onClick }: LoginProp) => {
             </Box>
             <Box>
               <InputTitle>Password</InputTitle>
-              <LoginInput
+              <RegisterInput
                 type={showPassword ? "text" : "password"}
                 inputProps={{
                   style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
@@ -186,10 +207,10 @@ export const LoginPage = ({ onClick }: LoginProp) => {
                 }
               />
             </Box>
-            <LoginBtn type="submit">Login</LoginBtn>
+            <RegisterBtn type="submit">Register</RegisterBtn>
           </form>
           <Box>
-            <StyledDivider>Not a member?</StyledDivider>
+            <StyledDivider>Already a memeber?</StyledDivider>
             <RegisterLink onClick={onClick}>
               <span style={{ fontWeight: "bold" }}>Join</span> to unlock the
               best of PRTVacations
