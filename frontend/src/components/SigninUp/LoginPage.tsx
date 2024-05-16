@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import "../../../index.css";
+import "../../index.css";
 import { object, string } from "yup";
 import { loginService } from "../../services/loginService";
 import { UserLoginCredentialsType } from "../../types/UserType";
