@@ -14,11 +14,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "../../index.css";
 import { object, string } from "yup";
-import { loginService } from "../../services/loginService";
+import { loginService } from "../../services/userServices/loginService";
 import { UserLoginCredentialsType } from "../../types/UserType";
 import { useForm } from "react-hook-form";
 import { setUser } from "../../App/features/usersSlice";
 import { useAppDispatch } from "../../App/hooks";
+import { useNavigate } from "react-router-dom";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -104,11 +105,10 @@ interface LoginProp {
 }
 
 export const LoginPage = ({ onClick }: LoginProp) => {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const { register, handleSubmit, reset } = useForm<UserLoginCredentialsType>();
-
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+  const { register, handleSubmit, reset } = useForm<UserLoginCredentialsType>();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -130,11 +130,12 @@ export const LoginPage = ({ onClick }: LoginProp) => {
 
   const validateUser = async (userCreds: UserLoginCredentialsType) => {
     try {
-      await userLoginScheme.validate(userCreds);
+      userLoginScheme.validate(userCreds);
       const user = await loginService(userCreds);
       console.log(user);
       dispatch(setUser(user));
       reset();
+      navigate("/home");
     } catch (error) {
       if ((error as { name: string }).name === "ValidationError") {
         console.log(

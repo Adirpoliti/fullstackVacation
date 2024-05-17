@@ -10,6 +10,16 @@ export type VacationType = {
     usersFollowed: Array<string>;
 }
 
+export type VacationPostType = {
+    locationCountry: string;
+    locationCity: string;
+    description: string;
+    startDate: Date;
+    endDate: Date;
+    price: number;
+    imageFile: any;
+}
+
 export type VacationsType = {
     locationCountry: string;
     usersFollowed: Array<string>;

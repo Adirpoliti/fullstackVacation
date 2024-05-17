@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { VacationCard } from "../VacationCard/VacationCard";
+import { VacationCard } from "./Vacations/VacationCard";
 import { Box, styled } from "@mui/material";
-import { vacationService } from "../../services/getVacations";
-import { VacationType } from "../../types/VacationType";
-import ChartsOverviewDemo from "../VacationChart/Chart";
-import { useAppSelector } from "../../App/hooks";
-import { selectUser } from "../../App/features/usersSlice";
+import { getAllVacationsService } from "../services/vacationServices/getVacations";
+import { VacationType } from "../types/VacationType";
+import { useAppSelector } from "../App/hooks";
+import { selectUser } from "../App/features/usersSlice";
 
 const HomeBox = styled(Box)({
   height: "100vh",
   display: "flex",
   flexDirection: "column",
   gap: "50px",
+  padding: "50px",
 });
 
 const CardsBox = styled(Box)({
@@ -32,7 +32,7 @@ export const HomePage = () => {
   useEffect(() => {
     const getAllVacations = async () => {
       try {
-        const AllVacations = await vacationService();
+        const AllVacations = await getAllVacationsService();
         setVacations(AllVacations);
         console.log(AllVacations);
       } catch {
@@ -43,13 +43,13 @@ export const HomePage = () => {
     getAllVacations();
   }, []);
 
-  return user.token ? (
+  return (
     <HomeBox>
       <CardsBox>
         {vacations.map((v, i) => (
           <VacationCard
             key={i}
-            _id={""}
+            _id={v._id}
             locationCountry={v.locationCountry}
             locationCity={v.locationCity}
             description={v.description}
@@ -61,9 +61,6 @@ export const HomePage = () => {
           />
         ))}
       </CardsBox>
-      <ChartsOverviewDemo />
     </HomeBox>
-  ) : (
-    <Box>check check</Box>
   );
 };

@@ -16,7 +16,8 @@ import "../../index.css";
 import { useForm } from "react-hook-form";
 import { UserRegisterCredentialsType } from "../../types/UserType";
 import { object, string } from "yup";
-import { registerService } from "../../services/registerService";
+import { registerService } from "../../services/userServices/registerService";
+import { useNavigate } from "react-router-dom";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -36,7 +37,7 @@ const AnotherMainContainer = styled(Box)({
   width: "400px",
   borderRadius: "15px",
   padding: "40px",
-  boxSizing: "border-box"
+  boxSizing: "border-box",
 });
 
 const RegisterTitle = styled(Typography)({
@@ -80,7 +81,7 @@ const RegisterBtn = styled(Button)({
   marginBottom: "30px",
   "&:hover": {
     color: "black",
-    border: "1px solid black"
+    border: "1px solid black",
   },
 });
 
@@ -116,6 +117,7 @@ interface RegisterProp {
 }
 
 export const RegisterPage = ({ onClick }: RegisterProp) => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const { register, handleSubmit, reset } =
@@ -144,6 +146,7 @@ export const RegisterPage = ({ onClick }: RegisterProp) => {
       console.log(userCreds);
       await registerService(userCreds);
       reset();
+      navigate("/home");
     });
   };
 
@@ -212,7 +215,7 @@ export const RegisterPage = ({ onClick }: RegisterProp) => {
           <Box>
             <StyledDivider>Already a memeber?</StyledDivider>
             <RegisterLink onClick={onClick}>
-              <span style={{ fontWeight: "bold" }}>Join</span> to unlock the
+              <span style={{ fontWeight: "bold" }}>Sign in</span> to unlock the
               best of PRTVacations
             </RegisterLink>
           </Box>
