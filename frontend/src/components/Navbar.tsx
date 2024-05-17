@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Link, styled } from "@mui/material";
+import { clearUser } from "../App/features/usersSlice";
+import { useAppDispatch } from "../App/hooks";
 
 const NavbarContainer = styled(Box)({
   display: "flex",
@@ -20,8 +22,10 @@ const StyledLink = styled(Link)({
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch()
 
   const handleLogout = () => {
+      dispatch(clearUser())
       navigate("/")
       console.log("logged out")
   }

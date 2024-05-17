@@ -46,7 +46,7 @@ export const HomePage = () => {
   return (
     <HomeBox>
       <CardsBox>
-        {vacations.map((v, i) => (
+        {user.token ? vacations.map((v, i) => (
           <VacationCard
             key={i}
             _id={v._id}
@@ -59,7 +59,7 @@ export const HomePage = () => {
             imageName={v.imageName}
             usersFollowed={[]}
           />
-        ))}
+        )) : "nothing"}
       </CardsBox>
     </HomeBox>
   );
