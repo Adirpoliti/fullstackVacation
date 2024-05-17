@@ -7,7 +7,7 @@ interface UserSliceState {
 }
 
 const initialState: UserSliceState = {
-  user: {
+  user: JSON.parse(localStorage.getItem('user') || JSON.stringify({
     token: "",
     registeredUser: {
       firstName: "",
@@ -15,7 +15,7 @@ const initialState: UserSliceState = {
       email: "",
       role: RoleType.User,
     },
-  },
+  })),
 };
 
 export const userSlice = createSlice({
