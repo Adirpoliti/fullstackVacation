@@ -1,9 +1,11 @@
 import React from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { Sign } from "../components/SigninUp/Sign";
-import { HomePage } from "../components/HomePage/HomePage";
-import { AddVacation } from "../components/AddVacation/AddVacation";
-import { Navbar } from "../components/NavBar/Navbar";
+import { HomePage } from "../components/HomePage";
+import { AddVacation } from "../components/Vacations/AddVacation";
+import { Navbar } from "../components/Navbar";
+import Chart from "../components/Vacations/Chart";
+import { EditVacation } from "../components/Vacations/EditVacation";
 
 const Layout = () => (
   <>
@@ -29,15 +31,14 @@ const router = createBrowserRouter([
         path: "newvacation",
         element: <AddVacation />,
       },
-      // Uncomment and add other routes as needed
-      // {
-      //   path: "editvacation",
-      //   element: <AddVacation />,
-      // },
-      // {
-      //   path: "vacationchart",
-      //   element: <Chart />,
-      // },
+      {
+        path: "editvacation",
+        element: <EditVacation />,
+      },
+      {
+        path: "vacationchart",
+        element: <Chart />,
+      },
     ],
   },
 ]);

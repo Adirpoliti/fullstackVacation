@@ -8,22 +8,15 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-// import { useForm } from "react-hook-form";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { date, number, object, ref, string } from "yup";
+import { useForm } from "react-hook-form";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoneyOutlined";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import "../../index.css";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
+import { VacationPostType } from "../../types/VacationType";
+import { addNewVacationService } from "../../services/vacationServices/addNewVacation";
+import { useAppSelector } from "../../App/hooks";
+import { selectUser } from "../../App/features/usersSlice";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -38,8 +31,8 @@ const AnotherMainContainer = styled(Box)({
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor: "#fafafa",
-  height: "750px",
+  backgroundColor: "#292929",
+  height: "830px",
   width: "400px",
   borderRadius: "15px",
   padding: "40px",
@@ -51,6 +44,7 @@ const AddVacTitle = styled(Typography)({
   fontSize: "30px",
   textAlign: "center",
   fontFamily: "tripSans",
+  color: "white",
 });
 
 const VacationInput = styled(OutlinedInput)({
@@ -58,16 +52,18 @@ const VacationInput = styled(OutlinedInput)({
   height: "45px",
   fontFamily: "tripSans",
   marginBottom: "20px",
+  backgroundColor: "#f5f5f5",
 });
 
 const VacationDescInput = styled(OutlinedInput)({
   width: "100%",
   fontFamily: "tripSans",
   marginBottom: "20px",
+  backgroundColor: "#f5f5f5",
 });
 
 const InputTitle = styled(InputLabel)({
-  color: "black",
+  color: "white",
   fontWeight: "600",
   fontSize: "15px",
   textAlign: "left",
@@ -84,27 +80,71 @@ const VacationBtn = styled(Button)({
   textAlign: "center",
   width: "100%",
   height: "45px",
-  //   marginBottom: "30px",
   "&:hover": {
     color: "black",
-    border: "1px solid black",
+    backgroundColor: "white",
   },
 });
 
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
+
 const FileBtn = styled(Button)({
-    marginBottom: "20px",
-    border: "1px solid #c0c0c0",
+  marginBottom: "20px",
+  border: "1px solid #c0c0c0",
+  color: "white",
+  "&:hover": {
     color: "black",
-    "&:hover": {
-        color: "black",
-        border: "1px solid black",
-        backgroundColor: "#fafafa",
-    }
+    backgroundColor: "#fafafa",
+  },
 }) as typeof Button;
 
 export const AddVacation = () => {
-  //   const { register, handleSubmit, reset } =
-  //     useForm<UserRegisterCredentialsType>();
+  const user = useAppSelector(selectUser);
+  const { register, handleSubmit, reset } = useForm<VacationPostType>();
+
+  const getMinDate = () => {
+    return new Date();
+  };
+
+  let newVacationScheme = object({
+    locationCountry: string().required().min(2),
+    locationCity: string().required().min(2),
+    description: string().required().min(2),
+    startDate: date().required().min(getMinDate()).max(ref("endDate")),
+    endDate: date().required().min(getMinDate()),
+    price: number().required().positive().integer().max(10000),
+  });
+
+  const handleNewVacation = async (newVacation: VacationPostType) => {
+    try {
+      console.log(user.token);
+      console.log(newVacation);
+      newVacationScheme.validate(newVacation);
+      const betterVacation = {
+        locationCountry: newVacation.locationCountry,
+        locationCity: newVacation.locationCity,
+        description: newVacation.description,
+        startDate: newVacation.startDate,
+        endDate: newVacation.endDate,
+        price: newVacation.price,
+        imageFile: newVacation.imageFile[0],
+      };
+      await addNewVacationService(betterVacation);
+      reset();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -113,18 +153,17 @@ export const AddVacation = () => {
           <Box style={{ marginBottom: "20px" }}>
             <AddVacTitle>Add New Vacation</AddVacTitle>
           </Box>
-          <form
-            onSubmit={() => {
-              console.log("hello world");
-            }}
-          >
+          <form onSubmit={handleSubmit(handleNewVacation)}>
             <Box>
-              <InputTitle>Destination</InputTitle>
+              <InputTitle>Destination Country</InputTitle>
               <VacationInput
-                inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
-                }}
-                // {...register("destination", { required: true })}
+                {...register("locationCountry", { required: true })}
+              />
+            </Box>
+            <Box>
+              <InputTitle>Destination City</InputTitle>
+              <VacationInput
+                {...register("locationCity", { required: true })}
               />
             </Box>
             <Box>
@@ -133,30 +172,21 @@ export const AddVacation = () => {
               <VacationDescInput
                 multiline
                 rows={3}
-                inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
-                }}
-                // {...register("description", { required: true })}
+                {...register("description", { required: true })}
               />
             </Box>
             <Box>
               <InputTitle>Start on</InputTitle>
               <VacationInput
                 type="date"
-                inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
-                }}
-                // {...register("email", { required: true })}
+                {...register("startDate", { required: true })}
               />
             </Box>
             <Box>
               <InputTitle>End on</InputTitle>
               <VacationInput
                 type="date"
-                inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
-                }}
-                // {...register("email", { required: true })}
+                {...register("endDate", { required: true })}
               />
             </Box>
             <Box>
@@ -165,13 +195,10 @@ export const AddVacation = () => {
                 type="number"
                 startAdornment={
                   <InputAdornment position="start">
-                    <AttachMoneyIcon />
+                    <AttachMoneyIcon sx={{ color: "#292929" }} />
                   </InputAdornment>
                 }
-                inputProps={{
-                  style: { WebkitBoxShadow: "0 0 0 1000px #fafafa inset" },
-                }}
-                // {...register("email", { required: true })}
+                {...register("price", { required: true })}
               />
             </Box>
             <Box>
@@ -182,7 +209,10 @@ export const AddVacation = () => {
                 startIcon={<CloudUploadIcon />}
               >
                 Upload Picture
-                <VisuallyHiddenInput type="file" />
+                <VisuallyHiddenInput
+                  type="file"
+                  {...register("imageFile", { required: true })}
+                />
               </FileBtn>
             </Box>
             <VacationBtn type="submit">Add Vacation</VacationBtn>
