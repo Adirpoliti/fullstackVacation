@@ -25,6 +25,41 @@ export const getOneVacationLogic = async (id: string) => {
     }
 }
 
+export const deleteVacationLogic = async (_id: string, req: Request) => {
+    try {
+        await getCurrentUser(req);
+        const findVacation = await Vacation.findOne({ _id: _id }) as VacationType
+        if (!findVacation) ResourceNotFoundError(`Failed to find the vacation with id: ${_id}!`)
+        const vacationId = findVacation._id;
+        await findVacation.deleteOne({ vacationId })
+    } catch (error) {
+        ResourceNotFoundError(`Failed to find the vacation with id: ${_id}!`);
+    }
+}
+
+// export const deleteCandidate = async (_id: string, req: Request): Promise<void> => {
+//     try {
+//         const user = await getCurrentUser(req);
+//         const findCandidate = await CandidateModel.findOne({ _id: _id }) as CandidateType
+//         if (!findCandidate) UnauthorizedError("Something went wrong");
+//         const deletedCandidate = new DeletedCandidates({
+//             _id: findCandidate._id,
+//             careerId: findCandidate.careerId,
+//             firstname: findCandidate.firstname,
+//             lastname: findCandidate.lastname,
+//             pdfUrl: findCandidate.pdfUrl,
+//             phoneNumber: findCandidate.phoneNumber,
+//             email: findCandidate.email,
+//         }) as DeletedCandidateType;
+//         await deletedCandidate.save()
+//         const candidateId = findCandidate._id;
+//         await findCandidate.deleteOne({ candidateId })
+//         console.log("Candidate removed and deleted succesfuly!");
+//     } catch (error) {
+//         throw error
+//     }
+// }
+
 export const addVacationLogic = async (req: Request, newVacation: VacationType): Promise<VacationType | string> => {
     try {
         await getCurrentUser(req)
