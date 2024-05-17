@@ -15,6 +15,7 @@ const NavbarContainer = styled(Box)({
   backgroundColor: "#333",
   zIndex: 1000,
   padding: "10px 0",
+  margin: "1px"
 });
 
 const StyledLink = styled(Link)({
