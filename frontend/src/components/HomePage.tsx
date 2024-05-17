@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { VacationCard } from "./Vacations/VacationCard";
-import { Box, styled } from "@mui/material";
+import { Box, Typography, styled } from "@mui/material";
 import { getAllVacationsService } from "../services/vacationServices/getVacations";
 import { VacationType } from "../types/VacationType";
 import { useAppSelector } from "../App/hooks";
 import { selectUser } from "../App/features/usersSlice";
+import { ErrorMessage } from "./ErrorMessage";
 
 const HomeBox = styled(Box)({
   height: "100vh",
   display: "flex",
   flexDirection: "column",
   gap: "50px",
-  padding: "50px",
+  padding: "150px",
 });
 
 const CardsBox = styled(Box)({
@@ -27,40 +28,42 @@ const CardsBox = styled(Box)({
 export const HomePage = () => {
   const [vacations, setVacations] = useState<VacationType[]>([]);
   const user = useAppSelector(selectUser);
-  console.log(user);
 
   useEffect(() => {
     const getAllVacations = async () => {
       try {
-        const AllVacations = await getAllVacationsService();
+        const AllVacations = await getAllVacationsService(user.token);
         setVacations(AllVacations);
-        console.log(AllVacations);
       } catch {
         console.log("error");
       }
     };
 
     getAllVacations();
-  }, []);
+  }, [user.token]);
 
-  return (
+  return user.token ? (
     <HomeBox>
       <CardsBox>
-        {user.token ? vacations.map((v, i) => (
-          <VacationCard
-            key={i}
-            _id={v._id}
-            locationCountry={v.locationCountry}
-            locationCity={v.locationCity}
-            description={v.description}
-            startDate={v.startDate}
-            endDate={v.endDate}
-            price={v.price}
-            imageName={v.imageName}
-            usersFollowed={[]}
-          />
-        )) : "nothing"}
+        {user.token
+          ? vacations.map((v, i) => (
+              <VacationCard
+                key={i}
+                _id={v._id}
+                locationCountry={v.locationCountry}
+                locationCity={v.locationCity}
+                description={v.description}
+                startDate={v.startDate}
+                endDate={v.endDate}
+                price={v.price}
+                imageName={v.imageName}
+                usersFollowed={v.usersFollowed}
+              />
+            ))
+          : "nothing"}
       </CardsBox>
     </HomeBox>
+  ) : (
+    <ErrorMessage />
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,17 +13,20 @@ import { useForm } from "react-hook-form";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoneyOutlined";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import "../../index.css";
-import { VacationPostType } from "../../types/VacationType";
-import { addNewVacationService } from "../../services/vacationServices/addNewVacation";
+import { VacationPostType, VacationType } from "../../types/VacationType";
 import { useAppSelector } from "../../App/hooks";
 import { selectUser } from "../../App/features/usersSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getOneVacationService } from "../../services/vacationServices/getOneVacation";
+import { editVacationService } from "../../services/vacationServices/editVacation";
 
 const MainContainer = styled(Box)({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   backgroundColor: "#191919",
-  height: "100vh",
+  height: "100%",
+  paddingTop: "150px",
 });
 
 const AnotherMainContainer = styled(Box)({
@@ -32,14 +35,15 @@ const AnotherMainContainer = styled(Box)({
   justifyContent: "center",
   alignItems: "center",
   backgroundColor: "#292929",
-  height: "830px",
+  height: "950px",
   width: "400px",
   borderRadius: "15px",
   padding: "40px",
   boxSizing: "border-box",
+  margin: "50px",
 });
 
-const AddVacTitle = styled(Typography)({
+const EditVacTitle = styled(Typography)({
   fontWeight: "600",
   fontSize: "30px",
   textAlign: "center",
@@ -47,7 +51,7 @@ const AddVacTitle = styled(Typography)({
   color: "white",
 });
 
-const VacationInput = styled(OutlinedInput)({
+const EditVacationInput = styled(OutlinedInput)({
   width: "100%",
   height: "45px",
   fontFamily: "tripSans",
@@ -55,14 +59,14 @@ const VacationInput = styled(OutlinedInput)({
   backgroundColor: "#f5f5f5",
 });
 
-const VacationDescInput = styled(OutlinedInput)({
+const EditVacationDescInput = styled(OutlinedInput)({
   width: "100%",
   fontFamily: "tripSans",
   marginBottom: "20px",
   backgroundColor: "#f5f5f5",
 });
 
-const InputTitle = styled(InputLabel)({
+const EditInputTitle = styled(InputLabel)({
   color: "white",
   fontWeight: "600",
   fontSize: "15px",
@@ -71,7 +75,7 @@ const InputTitle = styled(InputLabel)({
   marginBottom: "1px",
 });
 
-const VacationBtn = styled(Button)({
+const EditVacationBtn = styled(Button)({
   backgroundColor: "black",
   color: "white",
   fontFamily: "tripSans",
@@ -108,7 +112,21 @@ const FileBtn = styled(Button)({
   },
 }) as typeof Button;
 
+const ImgBox = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "#191919",
+  boxSizing: "border-box",
+  margin: "10px",
+});
+
 export const EditVacation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = location.state;
+  const [editedVacationState, setEditedVacationState] =
+    useState<VacationType>();
   const user = useAppSelector(selectUser);
   const { register, handleSubmit, reset } = useForm<VacationPostType>();
 
@@ -125,73 +143,91 @@ export const EditVacation = () => {
     price: number().required().positive().integer().max(10000),
   });
 
-  const handleNewVacation = async (newVacation: VacationPostType) => {
+  const handleEditedVacation = async (editedVacation: VacationPostType) => {
     try {
-      console.log(user.token);
-      console.log(newVacation);
-      newVacationScheme.validate(newVacation);
+      newVacationScheme.validate(editedVacation);
       const betterVacation = {
-        locationCountry: newVacation.locationCountry,
-        locationCity: newVacation.locationCity,
-        description: newVacation.description,
-        startDate: newVacation.startDate,
-        endDate: newVacation.endDate,
-        price: newVacation.price,
-        imageFile: newVacation.imageFile[0],
+        _id: id,
+        locationCountry: editedVacation.locationCountry,
+        locationCity: editedVacation.locationCity,
+        description: editedVacation.description,
+        startDate: editedVacation.startDate,
+        endDate: editedVacation.endDate,
+        price: editedVacation.price,
+        imageFile: editedVacation.imageFile[0],
       };
-      await addNewVacationService(betterVacation);
-      reset();
+      await editVacationService(betterVacation, user.token);
+      navigate("/home");
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    const fetchVacation = async () => {
+      try {
+        const vacation = await getOneVacationService(id, user.token);
+        setEditedVacationState(vacation);
+        reset({
+          locationCity: vacation.locationCity,
+          locationCountry: vacation.locationCountry,
+          description: vacation.description,
+          startDate: vacation.startDate.substring(0, 10).split("-").join("-"),
+          endDate: vacation.endDate.substring(0, 10).split("-").join("-"),
+          price: vacation.price,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchVacation();
+  }, [user.token, id, reset]);
 
   return (
     <>
       <MainContainer>
         <AnotherMainContainer>
           <Box style={{ marginBottom: "20px" }}>
-            <AddVacTitle>Edit Vacation</AddVacTitle>
+            <EditVacTitle>Edit Vacation</EditVacTitle>
           </Box>
-          <form onSubmit={handleSubmit(handleNewVacation)}>
+          <form onSubmit={handleSubmit(handleEditedVacation)}>
             <Box>
-              <InputTitle>Destination Country</InputTitle>
-              <VacationInput
+              <EditInputTitle>Destination Country</EditInputTitle>
+              <EditVacationInput
                 {...register("locationCountry", { required: true })}
               />
             </Box>
             <Box>
-              <InputTitle>Destination City</InputTitle>
-              <VacationInput
+              <EditInputTitle>Destination City</EditInputTitle>
+              <EditVacationInput
                 {...register("locationCity", { required: true })}
               />
             </Box>
             <Box>
-              <InputTitle>Description</InputTitle>
-
-              <VacationDescInput
+              <EditInputTitle>Description</EditInputTitle>
+              <EditVacationDescInput
                 multiline
                 rows={3}
                 {...register("description", { required: true })}
               />
             </Box>
             <Box>
-              <InputTitle>Start on</InputTitle>
-              <VacationInput
+              <EditInputTitle>Start on</EditInputTitle>
+              <EditVacationInput
                 type="date"
                 {...register("startDate", { required: true })}
               />
             </Box>
             <Box>
-              <InputTitle>End on</InputTitle>
-              <VacationInput
+              <EditInputTitle>End on</EditInputTitle>
+              <EditVacationInput
                 type="date"
                 {...register("endDate", { required: true })}
               />
             </Box>
             <Box>
-              <InputTitle>Price</InputTitle>
-              <VacationInput
+              <EditInputTitle>Price</EditInputTitle>
+              <EditVacationInput
                 type="number"
                 startAdornment={
                   <InputAdornment position="start">
@@ -202,7 +238,14 @@ export const EditVacation = () => {
               />
             </Box>
             <Box>
-              <InputTitle>Cover image</InputTitle>
+              <EditInputTitle>Cover image</EditInputTitle>
+              <ImgBox>
+                <img
+                  width={250}
+                  alt="country"
+                  src={`http://localhost:3001/images/${editedVacationState?.imageName}`}
+                />
+              </ImgBox>
               <FileBtn
                 fullWidth
                 component="label"
@@ -211,11 +254,11 @@ export const EditVacation = () => {
                 Upload Picture
                 <VisuallyHiddenInput
                   type="file"
-                  {...register("imageFile", { required: true })}
+                  {...register("imageFile", { required: false })}
                 />
               </FileBtn>
             </Box>
-            <VacationBtn type="submit">Add Vacation</VacationBtn>
+            <EditVacationBtn type="submit">Save Vacation</EditVacationBtn>
           </form>
         </AnotherMainContainer>
       </MainContainer>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -23,7 +23,8 @@ const MainContainer = styled(Box)({
   justifyContent: "center",
   alignItems: "center",
   backgroundColor: "#191919",
-  height: "100vh",
+  height: "100%",
+  paddingTop: "150px"
 });
 
 const AnotherMainContainer = styled(Box)({
@@ -37,6 +38,7 @@ const AnotherMainContainer = styled(Box)({
   borderRadius: "15px",
   padding: "40px",
   boxSizing: "border-box",
+  margin: "50px"
 });
 
 const AddVacTitle = styled(Typography)({
@@ -86,6 +88,13 @@ const VacationBtn = styled(Button)({
   },
 });
 
+const AddedVacationText = styled(Typography)({
+  color: "green",
+  fontFamily: "tripSans",
+  fontSize: "18px",
+  textAlign: "center",
+});
+
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -111,6 +120,7 @@ const FileBtn = styled(Button)({
 export const AddVacation = () => {
   const user = useAppSelector(selectUser);
   const { register, handleSubmit, reset } = useForm<VacationPostType>();
+  const [isVacationAdded, setIsVacationAdded] = useState<boolean>(false);
 
   const getMinDate = () => {
     return new Date();
@@ -127,8 +137,6 @@ export const AddVacation = () => {
 
   const handleNewVacation = async (newVacation: VacationPostType) => {
     try {
-      console.log(user.token);
-      console.log(newVacation);
       newVacationScheme.validate(newVacation);
       const betterVacation = {
         locationCountry: newVacation.locationCountry,
@@ -139,7 +147,8 @@ export const AddVacation = () => {
         price: newVacation.price,
         imageFile: newVacation.imageFile[0],
       };
-      await addNewVacationService(betterVacation);
+      await addNewVacationService(betterVacation, user.token);
+      setIsVacationAdded(!isVacationAdded);
       reset();
     } catch (err) {
       console.log(err);
@@ -217,6 +226,9 @@ export const AddVacation = () => {
             </Box>
             <VacationBtn type="submit">Add Vacation</VacationBtn>
           </form>
+          {isVacationAdded && (
+            <AddedVacationText>Vacation was added successfully! ☺</AddedVacationText>
+          )}
         </AnotherMainContainer>
       </MainContainer>
     </>

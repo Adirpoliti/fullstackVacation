@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Link, styled } from "@mui/material";
-import { clearUser } from "../App/features/usersSlice";
-import { useAppDispatch } from "../App/hooks";
+import { clearUser, selectUser } from "../App/features/usersSlice";
+import { useAppDispatch, useAppSelector } from "../App/hooks";
 
 const NavbarContainer = styled(Box)({
   display: "flex",
@@ -10,12 +10,10 @@ const NavbarContainer = styled(Box)({
   alignItems: "center",
   columnGap: "40px",
   position: "fixed",
-  top: 0,
+  top: "0px",
   width: "100%",
-  backgroundColor: "#333",
   zIndex: 1000,
-  padding: "10px 0",
-  margin: "1px"
+  backgroundColor: "#191919",
 });
 
 const StyledLink = styled(Link)({
@@ -26,24 +24,34 @@ const StyledLink = styled(Link)({
   },
 });
 
-
 export const Navbar = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
 
   const handleLogout = () => {
-      dispatch(clearUser())
-      navigate("/")
-      console.log("logged out")
-  }
+    dispatch(clearUser());
+    navigate("/");
+    console.log("logged out");
+  };
 
   return (
-    <NavbarContainer>
-      <StyledLink onClick={() => navigate("/home")}>All Vacations</StyledLink>
-      <StyledLink  onClick={() => navigate("/newvacation")} href="">New Vacation</StyledLink>
-      <img src="/Assets/Images/Untitled-2.jpg" alt="logo" height={150} />
-      <StyledLink onClick={() => navigate("/vacationchart")}>Vacations Report</StyledLink>
-      <StyledLink onClick={handleLogout} >Logout</StyledLink>
-    </NavbarContainer>
-  );
+    user.token ? (
+      <NavbarContainer>
+        <StyledLink onClick={() => navigate("/home")}>All Vacations</StyledLink>
+        {user.registeredUser.role === "admin" && (
+          <StyledLink onClick={() => navigate("/newvacation")} href="">
+            New Vacation
+          </StyledLink>
+        )}
+        <img src="/Assets/Images/Untitled-2.jpg" alt="logo" height={150} />
+        {user.registeredUser.role === "admin" && (
+          <StyledLink onClick={() => navigate("/vacationchart")}>
+            Vacations Report
+          </StyledLink>
+        )}
+        <StyledLink onClick={handleLogout}>Logout</StyledLink>
+      </NavbarContainer>
+    ) : null
+  )
 };

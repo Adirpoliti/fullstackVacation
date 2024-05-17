@@ -14,10 +14,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import "../../index.css";
 import { useForm } from "react-hook-form";
-import { UserRegisterCredentialsType } from "../../types/UserType";
+import { UserRegisterCredentialsType, UserType } from "../../types/UserType";
 import { object, string } from "yup";
 import { registerService } from "../../services/userServices/registerService";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../App/hooks";
+import { setUser } from "../../App/features/usersSlice";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -117,6 +119,7 @@ interface RegisterProp {
 }
 
 export const RegisterPage = ({ onClick }: RegisterProp) => {
+  const dispatch = useAppDispatch()
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -141,14 +144,16 @@ export const RegisterPage = ({ onClick }: RegisterProp) => {
     password: string().required().min(8).max(32).matches(passwordRegexPattern),
   });
 
-  const validateUser = (userCreds: UserRegisterCredentialsType) => {
-    userRegistrationScheme.validate(userCreds).then(async () => {
+  const validateUser = async (userCreds: UserRegisterCredentialsType) => {
+    userRegistrationScheme.validate(userCreds)
       console.log(userCreds);
-      await registerService(userCreds);
+      const user = await registerService(userCreds)
+      console.log(user);
+      // dispatch(setUser(user))
       reset();
       navigate("/home");
-    });
   };
+
 
   return (
     <>
