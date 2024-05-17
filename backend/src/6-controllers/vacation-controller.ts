@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { addVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllInactiveVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../5-logic/vacationLogic';
+import { addVacationLogic, deleteVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllInactiveVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../5-logic/vacationLogic';
 import { VacationType } from '../4-models/Vacation-Model';
 import { verifyAdminMiddlewere } from '../3-middleware/verifyAdmin';
 
@@ -50,6 +50,16 @@ router.post('/vacations/new', verifyAdminMiddlewere, async (req: Request, res: R
         res.status(201).json(addedVacation);
     } catch (err) {
         next(err)
+    }
+});
+
+router.delete('/vacations/remove/:id', verifyAdminMiddlewere, async (req: Request, res: Response, nextfunc: NextFunction) => {
+    try {
+        const id = req.params.id
+        await deleteVacationLogic(id, req);
+        res.sendStatus(204)
+    } catch (err) {
+        nextfunc(err);
     }
 });
 
