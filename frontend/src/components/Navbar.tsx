@@ -9,6 +9,12 @@ const NavbarContainer = styled(Box)({
   justifyContent: "center",
   alignItems: "center",
   columnGap: "40px",
+  position: "fixed",
+  top: 0,
+  width: "100%",
+  backgroundColor: "#333",
+  zIndex: 1000,
+  padding: "10px 0",
 });
 
 const StyledLink = styled(Link)({
