@@ -18,6 +18,7 @@ import {
 import { useAppSelector } from "../../App/hooks";
 import { selectUser } from "../../App/features/usersSlice";
 import { useNavigate } from "react-router-dom";
+import { deleteVacationService } from "../../services/vacationServices/deleteVacatio";
 
 const VacationPriceBtn = styled(Button)({
   width: "100%",
@@ -91,6 +92,7 @@ export const VacationCard = ({
   price,
   imageName,
   _id,
+  usersFollowed,
 }: VacationType) => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
@@ -101,8 +103,12 @@ export const VacationCard = ({
   };
 
   const handleEditVacation = (id: string) => {
+    navigate("/editvacation", { state: { id } });
+  };
+
+  const handleDeleteVacation = async (id: string) => {
     console.log(id);
-    navigate("/editvacation");
+    await deleteVacationService(id, user.token);
   };
 
   const VacationStartDate = startDate
@@ -148,6 +154,7 @@ export const VacationCard = ({
       </CardContent>
       <CardActions disableSpacing>
         <IconButton onClick={handleFavoriteClick} aria-label="add to favorites">
+          {`${usersFollowed.length}`}
           {isFavorite ? (
             <FavoriteIcon style={{ color: "29cedd" }} />
           ) : (
@@ -159,7 +166,7 @@ export const VacationCard = ({
             <IconButton onClick={() => handleEditVacation(_id)}>
               <EditOutlinedIcon style={{ color: "#818181" }} />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => handleDeleteVacation(_id)}>
               <DeleteOutlineIcon style={{ color: "#818181" }} />
             </IconButton>
           </>

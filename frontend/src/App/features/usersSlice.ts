@@ -6,16 +6,31 @@ interface UserSliceState {
   user: UserType;
 }
 
+const defaultUser: UserType = {
+  token: "",
+  registeredUser: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: RoleType.User,
+  },
+};
+
+const getUserFromLocalStorage = (): UserType => {
+  const userData = localStorage.getItem('user');
+  if (userData) {
+    try {
+      return JSON.parse(userData) as UserType;
+    } catch (error) {
+      console.error('Error parsing user data from localStorage', error);
+      return defaultUser;
+    }
+  }
+  return defaultUser;
+};
+
 const initialState: UserSliceState = {
-  user: JSON.parse(localStorage.getItem('user') || JSON.stringify({
-    token: "",
-    registeredUser: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      role: RoleType.User,
-    },
-  })),
+  user: getUserFromLocalStorage(),
 };
 
 export const userSlice = createSlice({
@@ -24,20 +39,15 @@ export const userSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
+      localStorage.setItem('user', JSON.stringify(state.user));
     },
     clearUser: (state) => {
-      state.user = {
-        token: "",
-        registeredUser: {
-          firstName: "",
-          lastName: "",
-          email: "",
-          role: RoleType.User,
-        },
-      };
+      state.user = defaultUser;
+      localStorage.removeItem('user');
     },
     updateUserToken: (state, action: PayloadAction<string>) => {
       state.user.token = action.payload;
+      localStorage.setItem('user', JSON.stringify(state.user));
     },
   },
 });

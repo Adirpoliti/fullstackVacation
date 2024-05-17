@@ -3,6 +3,8 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { VacationType, VacationsType } from "../../types/VacationType";
 import { getAllVacationsService } from "../../services/vacationServices/getVacations";
 import { Box, styled } from "@mui/material";
+import { useAppSelector } from "../../App/hooks";
+import { selectUser } from "../../App/features/usersSlice";
 
 const ChartContainer = styled(Box)({
   display: "flex",
@@ -10,15 +12,17 @@ const ChartContainer = styled(Box)({
   alignItems: "center",
   backgroundColor: "#191919",
   marginTop: "100px",
+  paddingTop: "150px"
 });
 
 export default function ChartsOverviewDemo() {
+  const user = useAppSelector(selectUser);
   const [vacations, setVacations] = useState<VacationsType[]>([]);
 
   useEffect(() => {
     const fetchVacations = async () => {
       try {
-        const vacationsData = await getAllVacationsService();
+        const vacationsData = await getAllVacationsService(user.token);
         const betterVacations: VacationsType[] = vacationsData.map(
           (v: VacationType) => ({
             locationCountry: v.locationCountry,
@@ -32,7 +36,7 @@ export default function ChartsOverviewDemo() {
     };
 
     fetchVacations();
-  }, []);
+  }, [user.token]);
 
   const seriesData = vacations.map((country) => country.locationCountry);
 
@@ -43,11 +47,11 @@ export default function ChartsOverviewDemo() {
       <BarChart
         sx={{
           ".MuiChartsAxis-line": {
-            stroke: "white",
+            stroke: "white !important",
           },
           ".MuiChartsAxis-tick": {
-            stroke: "white",
-          }
+            stroke: "white !important",
+          },
         }}
         xAxis={[
           {

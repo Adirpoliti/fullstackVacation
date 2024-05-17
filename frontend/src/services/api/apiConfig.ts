@@ -4,7 +4,9 @@ export const apiConfig = {
     apiRegistrationPath: baseUrl + "/auth/register",
     apiLoginPath: baseUrl + "/auth/login",
     apiVacationPath: baseUrl + "/vacations",
+    apiOneVacationPath: baseUrl + "/vacations/one",
     apiNewVacationPath: baseUrl + "/vacations/new",
     apiEditVacationPath: baseUrl + "/vacations/edit",
-    apiFollowVacationPath: baseUrl + "/vacations/follow/:id"
+    apiDeleteVacationPath: baseUrl + "/vacations/remove",
+    // apiFollowVacationPath: baseUrl + "/vacations/follow/:id",
 }
