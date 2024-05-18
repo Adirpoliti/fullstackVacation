@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { addVacationLogic, deleteVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllInactiveVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../5-logic/vacationLogic';
+import { addVacationLogic, deleteVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllFollowedVacationsLogic, getAllInactiveVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../5-logic/vacationLogic';
 import { VacationType } from '../4-models/Vacation-Model';
 import { verifyAdminMiddlewere } from '../3-middleware/verifyAdmin';
 
@@ -26,6 +26,15 @@ router.get('/vacations/active', async (req: Request, res: Response, next: NextFu
 router.get('/vacations/inactive', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const response = await getAllInactiveVacationsLogic(req);
+        res.json(response);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/vacations/followed', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const response = await getAllFollowedVacationsLogic(req);
         res.json(response);
     } catch (err) {
         next(err);
@@ -78,7 +87,7 @@ router.post('/vacations/follow/:id', async (req: Request, res: Response, nextfun
     try {
         const vacationId = req.params.id
         const response = await followVacationLogic(req, vacationId);
-        response === "user already follow this vacation" ? res.status(200).json(response) : res.status(201).json(response);
+        res.json(response);
     } catch (err) {
         nextfunc(err);
     }
