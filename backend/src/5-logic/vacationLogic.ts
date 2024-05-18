@@ -37,29 +37,6 @@ export const deleteVacationLogic = async (_id: string, req: Request) => {
     }
 }
 
-// export const deleteCandidate = async (_id: string, req: Request): Promise<void> => {
-//     try {
-//         const user = await getCurrentUser(req);
-//         const findCandidate = await CandidateModel.findOne({ _id: _id }) as CandidateType
-//         if (!findCandidate) UnauthorizedError("Something went wrong");
-//         const deletedCandidate = new DeletedCandidates({
-//             _id: findCandidate._id,
-//             careerId: findCandidate.careerId,
-//             firstname: findCandidate.firstname,
-//             lastname: findCandidate.lastname,
-//             pdfUrl: findCandidate.pdfUrl,
-//             phoneNumber: findCandidate.phoneNumber,
-//             email: findCandidate.email,
-//         }) as DeletedCandidateType;
-//         await deletedCandidate.save()
-//         const candidateId = findCandidate._id;
-//         await findCandidate.deleteOne({ candidateId })
-//         console.log("Candidate removed and deleted succesfuly!");
-//     } catch (error) {
-//         throw error
-//     }
-// }
-
 export const addVacationLogic = async (req: Request, newVacation: VacationType): Promise<VacationType | string> => {
     try {
         await getCurrentUser(req)
@@ -138,6 +115,18 @@ export const getAllInactiveVacationsLogic = async (req: Request) => {
         const allVacations = await Vacation.find() as VacationType[];
         const activeVacations = allVacations.filter((allVacations) => allVacations.startDate <= today);
         return activeVacations
+    } catch (error) {
+        UnauthorizedError('Failed to fetch the vacations !');
+    }
+}
+
+export const getAllFollowedVacationsLogic = async (req: Request) => {
+    try {
+        const user = await getCurrentUser(req)
+        const currentUser = await User.findOne({ _id: user._id }) as UserType;
+        const allVacations = await Vacation.find() as VacationType[];
+        const followedVacations = allVacations.filter((allVacations) => allVacations.usersFollowed.includes(currentUser._id));
+        return followedVacations
     } catch (error) {
         UnauthorizedError('Failed to fetch the vacations !');
     }
