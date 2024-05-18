@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Box, Typography, styled } from "@mui/material";
+import { Box, Typography, styled, Pagination } from "@mui/material";
 import { getAllVacationsService } from "../services/vacationServices/getVacations";
 import { VacationType } from "../types/VacationType";
 import { useAppSelector } from "../App/hooks";
@@ -35,7 +35,13 @@ const FilterBox = styled(Box)({
 
 export const HomePage = () => {
   const [vacations, setVacations] = useState<VacationType[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const user = useAppSelector(selectUser);
+
+  const vacationsPerPage = 10;
+  const indexOfLastVacation = currentPage * vacationsPerPage;
+  const indexOfFirstVacation = indexOfLastVacation - vacationsPerPage;
+  const currentVacations = vacations.slice(indexOfFirstVacation, indexOfLastVacation);
 
   useEffect(() => {
     const getAllVacations = async () => {
@@ -49,6 +55,10 @@ export const HomePage = () => {
 
     getAllVacations();
   }, [user.token]);
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+  };
 
   return (
     <HomeBox>
@@ -64,7 +74,7 @@ export const HomePage = () => {
       </FilterBox>
       <CardsBox>
         {user.token ? (
-          vacations.map((v, i) => (
+          currentVacations.map((v, i) => (
             <VacationCard
               key={i}
               _id={v._id}
@@ -82,6 +92,14 @@ export const HomePage = () => {
           <Navigate to="/" />
         )}
       </CardsBox>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+        <Pagination
+          count={Math.ceil(vacations.length / vacationsPerPage)}
+          page={currentPage}
+          onChange={handlePageChange}
+          variant="outlined"
+        />
+      </Box>
     </HomeBox>
   );
 };
