@@ -87,7 +87,7 @@ router.post('/vacations/follow/:id', async (req: Request, res: Response, nextfun
     try {
         const vacationId = req.params.id
         const response = await followVacationLogic(req, vacationId);
-        response === "user already follow this vacation" ? res.status(200).json(response) : res.status(201).json(response);
+        res.json(response);
     } catch (err) {
         nextfunc(err);
     }
