@@ -12,7 +12,6 @@ const HomeBox = styled(Box)({
   height: "100vh",
   display: "flex",
   flexDirection: "column",
-  // gap: "50px",
   padding: "150px",
 });
 
