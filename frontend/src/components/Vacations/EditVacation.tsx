@@ -16,7 +16,7 @@ import "../../index.css";
 import { VacationPostType, VacationType } from "../../types/VacationType";
 import { useAppSelector } from "../../App/hooks";
 import { selectUser } from "../../App/features/usersSlice";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getOneVacationService } from "../../services/vacationServices/getOneVacation";
 import { editVacationService } from "../../services/vacationServices/editVacation";
 
@@ -185,7 +185,7 @@ export const EditVacation = () => {
 
   return (
     <>
-      <MainContainer>
+      {user.registeredUser.role === "admin" ? <MainContainer>
         <AnotherMainContainer>
           <Box style={{ marginBottom: "20px" }}>
             <EditVacTitle>Edit Vacation</EditVacTitle>
@@ -261,7 +261,7 @@ export const EditVacation = () => {
             <EditVacationBtn type="submit">Save Vacation</EditVacationBtn>
           </form>
         </AnotherMainContainer>
-      </MainContainer>
+      </MainContainer> : <Navigate to ="/" />}
     </>
   );
 };

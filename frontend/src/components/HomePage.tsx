@@ -6,6 +6,7 @@ import { VacationType } from "../types/VacationType";
 import { useAppSelector } from "../App/hooks";
 import { selectUser } from "../App/features/usersSlice";
 import { ErrorMessage } from "./ErrorMessage";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const HomeBox = styled(Box)({
   height: "100vh",
@@ -40,9 +41,9 @@ export const HomePage = () => {
     };
 
     getAllVacations();
-  }, [user.token]);
+  }, [user.token, vacations]);
 
-  return user.token ? (
+  return (
     <HomeBox>
       <CardsBox>
         {user.token
@@ -60,10 +61,8 @@ export const HomePage = () => {
                 usersFollowed={v.usersFollowed}
               />
             ))
-          : "nothing"}
+          : <Navigate to ="/" />}
       </CardsBox>
     </HomeBox>
-  ) : (
-    <ErrorMessage />
-  );
+  )
 };

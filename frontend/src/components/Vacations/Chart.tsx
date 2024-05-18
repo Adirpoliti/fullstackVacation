@@ -5,6 +5,8 @@ import { getAllVacationsService } from "../../services/vacationServices/getVacat
 import { Box, styled } from "@mui/material";
 import { useAppSelector } from "../../App/hooks";
 import { selectUser } from "../../App/features/usersSlice";
+import { UserType } from "../../types/UserType";
+import { Navigate } from "react-router-dom";
 
 const ChartContainer = styled(Box)({
   display: "flex",
@@ -44,6 +46,7 @@ export default function ChartsOverviewDemo() {
 
   return (
     <ChartContainer>
+      {user.registeredUser.role === "admin" ?
       <BarChart
         sx={{
           ".MuiChartsAxis-line": {
@@ -82,6 +85,7 @@ export default function ChartsOverviewDemo() {
         width={1000}
         height={500}
       />
+      : <Navigate to ="/" />}
     </ChartContainer>
   );
 }

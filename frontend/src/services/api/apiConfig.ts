@@ -8,5 +8,5 @@ export const apiConfig = {
     apiNewVacationPath: baseUrl + "/vacations/new",
     apiEditVacationPath: baseUrl + "/vacations/edit",
     apiDeleteVacationPath: baseUrl + "/vacations/remove",
-    // apiFollowVacationPath: baseUrl + "/vacations/follow/:id",
+    apiFollowVacationPath: baseUrl + "/vacations/follow",
 }

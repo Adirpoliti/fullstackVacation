@@ -148,8 +148,7 @@ export const RegisterPage = ({ onClick }: RegisterProp) => {
     userRegistrationScheme.validate(userCreds)
       console.log(userCreds);
       const user = await registerService(userCreds)
-      console.log(user);
-      // dispatch(setUser(user))
+      dispatch(setUser(user))
       reset();
       navigate("/home");
   };
