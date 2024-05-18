@@ -4,6 +4,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import {
   Button,
   Typography,
@@ -14,12 +15,13 @@ import {
   CardHeader,
   IconButton,
   styled,
+  Box,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../App/hooks";
-import { clearUser, selectUser, setUser } from "../../App/features/usersSlice";
+import { selectUser } from "../../App/features/usersSlice";
 import { useNavigate } from "react-router-dom";
-import { deleteVacationService } from "../../services/vacationServices/deleteVacatio";
 import { followVacationService } from "../../services/vacationServices/followVacation";
+import { DeleteVacationModal } from "./DeleteVacationModal";
 
 const VacationPriceBtn = styled(Button)({
   width: "100%",
@@ -38,7 +40,6 @@ const VacationPriceBtn = styled(Button)({
 });
 
 const VacationStyledCard = styled(Card)({
-  height: "550px",
   width: "345px",
   backgroundColor: "#292929",
   color: "white",
@@ -84,6 +85,20 @@ const CardDates = styled(Typography)({
   marginBottom: "10px",
 });
 
+const CardHeaderBox = styled(Box)({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "baseline",
+  height: "130px",
+})
+
+const StyledIconBtn = styled(IconButton)({
+  fontFamily: "tripSans",
+  color: "white",
+  fontSize: "18px",
+  gap: "5px",
+})
+
 export const VacationCard = ({
   locationCity,
   locationCountry,
@@ -98,13 +113,13 @@ export const VacationCard = ({
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   const [isFavorite, setIsFavotite] = useState<boolean>(false);
-  const dispatch = useAppDispatch()
-
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  // const dispatch = useAppDispatch()
 
   const handleFavoriteClick = async (id: string) => {
     setIsFavotite(!isFavorite);
-    const newUser = await followVacationService(id, user.token)
-    console.log(newUser)
+    const newUser = await followVacationService(id, user.token);
+    console.log(newUser);
     // dispatch(clearUser())
     // dispatch(setUser(newUser))
   };
@@ -113,8 +128,8 @@ export const VacationCard = ({
     navigate("/editvacation", { state: { id } });
   };
 
-  const handleDeleteVacation = async (id: string) => {
-    await deleteVacationService(id, user.token);
+  const handleDeleteVacation = () => {
+    setOpenModal(!openModal);
   };
 
   const VacationStartDate = startDate
@@ -131,53 +146,72 @@ export const VacationCard = ({
     .join(".");
 
   return (
-    <VacationStyledCard>
-      <CardHeader
-        title={
-          <CardTitle>
-            {locationCity}, {locationCountry}
-          </CardTitle>
-        }
-        subheader={
-          <CardDates>
-            {VacationStartDate} – {VacationEndDate}
-          </CardDates>
-        }
+    <>
+      <VacationStyledCard>
+        <CardHeaderBox>
+          <CardHeader
+            title={
+              <CardTitle>
+                {locationCity}, {locationCountry}
+              </CardTitle>
+            }
+            subheader={
+              <>
+                <CardDates>
+                  <CalendarTodayIcon
+                    sx={{ fontSize: "14px", marginRight: "5px" }}
+                  />
+                  {VacationStartDate} – {VacationEndDate}
+                </CardDates>
+              </>
+            }
+          />
+          <CardActions disableSpacing>
+            {user.registeredUser.role === "user" && (
+              <StyledIconBtn
+                onClick={() => handleFavoriteClick(_id)}
+                aria-label="add to favorites"
+              >
+                {isFavorite ? (
+                  <FavoriteIcon style={{ color: "29cedd" }} />
+                ) : (
+                  <FavoriteBorderOutlinedIcon style={{ color: "#818181" }} />
+                )}
+                {`${usersFollowed.length}`}
+              </StyledIconBtn>
+            )}
+            {user.registeredUser.role === "admin" && (
+              <>
+                <IconButton onClick={() => handleEditVacation(_id)}>
+                  <EditOutlinedIcon style={{ color: "#818181", fontSize: "20px" }} />
+                </IconButton>
+                <IconButton onClick={handleDeleteVacation}>
+                  <DeleteOutlineIcon style={{ color: "#818181", fontSize: "20px" }} />
+                </IconButton>
+              </>
+            )}
+          </CardActions>
+        </CardHeaderBox>
+        <CardMedia
+          component="img"
+          height="194"
+          image={`http://localhost:3001/images/${imageName}`}
+          alt={locationCountry}
+          title={locationCountry + " , " + locationCity}
+          style={{ borderTopLeftRadius: "5px", borderTopRightRadius: "5px" }}
+        />
+        <CardContent sx={{padding: "16px 16px 0px 16px"}}>
+          <CardsDescription variant="body2" color="text.secondary">
+            {description}
+          </CardsDescription>
+          <VacationPriceBtn>${price}</VacationPriceBtn>
+        </CardContent>
+      </VacationStyledCard>
+      <DeleteVacationModal
+        isOpened={openModal}
+        id={_id}
+        onClose={() => setOpenModal(false)}
       />
-      <CardMedia
-        component="img"
-        height="194"
-        image={`http://localhost:3001/images/${imageName}`}
-        alt={locationCountry}
-        title={locationCountry + " , " + locationCity}
-        style={{ borderTopLeftRadius: "5px", borderTopRightRadius: "5px" }}
-      />
-      <CardContent>
-        <CardsDescription variant="body2" color="text.secondary">
-          {description}
-        </CardsDescription>
-        <VacationPriceBtn>${price}</VacationPriceBtn>
-      </CardContent>
-      <CardActions disableSpacing>
-        {user.registeredUser.role === "user" && <IconButton onClick={() => handleFavoriteClick(_id)} aria-label="add to favorites">
-          {`${usersFollowed.length}`}
-          {isFavorite ? (
-            <FavoriteIcon style={{ color: "29cedd" }} />
-          ) : (
-            <FavoriteBorderOutlinedIcon style={{ color: "#818181" }} />
-          )}
-        </IconButton>}
-        {user.registeredUser.role === "admin" && (
-          <>
-            <IconButton onClick={() => handleEditVacation(_id)}>
-              <EditOutlinedIcon style={{ color: "#818181" }} />
-            </IconButton>
-            <IconButton onClick={() => handleDeleteVacation(_id)}>
-              <DeleteOutlineIcon style={{ color: "#818181" }} />
-            </IconButton>
-          </>
-        )}
-      </CardActions>
-    </VacationStyledCard>
+    </>
   );
 };

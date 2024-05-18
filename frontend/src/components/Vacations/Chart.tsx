@@ -5,7 +5,6 @@ import { getAllVacationsService } from "../../services/vacationServices/getVacat
 import { Box, styled } from "@mui/material";
 import { useAppSelector } from "../../App/hooks";
 import { selectUser } from "../../App/features/usersSlice";
-import { UserType } from "../../types/UserType";
 import { Navigate } from "react-router-dom";
 
 const ChartContainer = styled(Box)({
