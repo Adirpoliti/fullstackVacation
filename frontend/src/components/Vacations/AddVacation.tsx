@@ -17,6 +17,7 @@ import { VacationPostType } from "../../types/VacationType";
 import { addNewVacationService } from "../../services/vacationServices/addNewVacation";
 import { useAppSelector } from "../../App/hooks";
 import { selectUser } from "../../App/features/usersSlice";
+import { Navigate } from "react-router-dom";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -158,6 +159,7 @@ export const AddVacation = () => {
   return (
     <>
       <MainContainer>
+        {user.registeredUser.role === "admin" ?
         <AnotherMainContainer>
           <Box style={{ marginBottom: "20px" }}>
             <AddVacTitle>Add New Vacation</AddVacTitle>
@@ -230,6 +232,7 @@ export const AddVacation = () => {
             <AddedVacationText>Vacation was added successfully! ☺</AddedVacationText>
           )}
         </AnotherMainContainer>
+        : <Navigate to ="/" />}
       </MainContainer>
     </>
   );

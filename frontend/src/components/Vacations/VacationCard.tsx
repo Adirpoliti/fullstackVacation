@@ -15,10 +15,11 @@ import {
   IconButton,
   styled,
 } from "@mui/material";
-import { useAppSelector } from "../../App/hooks";
-import { selectUser } from "../../App/features/usersSlice";
+import { useAppDispatch, useAppSelector } from "../../App/hooks";
+import { clearUser, selectUser, setUser } from "../../App/features/usersSlice";
 import { useNavigate } from "react-router-dom";
 import { deleteVacationService } from "../../services/vacationServices/deleteVacatio";
+import { followVacationService } from "../../services/vacationServices/followVacation";
 
 const VacationPriceBtn = styled(Button)({
   width: "100%",
@@ -97,9 +98,15 @@ export const VacationCard = ({
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   const [isFavorite, setIsFavotite] = useState<boolean>(false);
+  const dispatch = useAppDispatch()
 
-  const handleFavoriteClick = () => {
+
+  const handleFavoriteClick = async (id: string) => {
     setIsFavotite(!isFavorite);
+    const newUser = await followVacationService(id, user.token)
+    console.log(newUser)
+    // dispatch(clearUser())
+    // dispatch(setUser(newUser))
   };
 
   const handleEditVacation = (id: string) => {
@@ -107,7 +114,6 @@ export const VacationCard = ({
   };
 
   const handleDeleteVacation = async (id: string) => {
-    console.log(id);
     await deleteVacationService(id, user.token);
   };
 
@@ -153,14 +159,14 @@ export const VacationCard = ({
         <VacationPriceBtn>${price}</VacationPriceBtn>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton onClick={handleFavoriteClick} aria-label="add to favorites">
+        {user.registeredUser.role === "user" && <IconButton onClick={() => handleFavoriteClick(_id)} aria-label="add to favorites">
           {`${usersFollowed.length}`}
           {isFavorite ? (
             <FavoriteIcon style={{ color: "29cedd" }} />
           ) : (
             <FavoriteBorderOutlinedIcon style={{ color: "#818181" }} />
           )}
-        </IconButton>
+        </IconButton>}
         {user.registeredUser.role === "admin" && (
           <>
             <IconButton onClick={() => handleEditVacation(_id)}>
