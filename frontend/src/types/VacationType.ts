@@ -8,6 +8,7 @@ export type VacationType = {
     price: number;
     imageName: string;
     usersFollowed: Array<string>;
+    refresh:()=>Promise<void>
 }
 
 export type VacationPostType = {

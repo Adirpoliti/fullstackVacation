@@ -109,6 +109,7 @@ export const VacationCard = ({
   imageName,
   _id,
   usersFollowed,
+  refresh
 }: VacationType) => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
@@ -211,6 +212,7 @@ export const VacationCard = ({
         isOpened={openModal}
         id={_id}
         onClose={() => setOpenModal(false)}
+        refresh={refresh}
       />
     </>
   );

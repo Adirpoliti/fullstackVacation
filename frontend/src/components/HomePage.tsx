@@ -42,19 +42,19 @@ export const HomePage = () => {
   const indexOfLastVacation = currentPage * vacationsPerPage;
   const indexOfFirstVacation = indexOfLastVacation - vacationsPerPage;
   const currentVacations = vacations.slice(indexOfFirstVacation, indexOfLastVacation);
-
+  const getAllVacations = async () => {
+    try {
+      const AllVacations = await getAllVacationsService(user.token);
+      setVacations(AllVacations);
+    } catch {
+      console.log("error");
+    }
+  };
   useEffect(() => {
-    const getAllVacations = async () => {
-      try {
-        const AllVacations = await getAllVacationsService(user.token);
-        setVacations(AllVacations);
-      } catch {
-        console.log("error");
-      }
-    };
+ 
 
     getAllVacations();
-  }, [user.token]);
+  },[user.token]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
@@ -86,6 +86,7 @@ export const HomePage = () => {
               price={v.price}
               imageName={v.imageName}
               usersFollowed={v.usersFollowed}
+              refresh={getAllVacations}
             />
           ))
         ) : (

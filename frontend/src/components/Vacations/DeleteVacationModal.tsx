@@ -45,9 +45,10 @@ interface ModalProps {
   isOpened: boolean;
   id: string;
   onClose: () => void;
+  refresh:()=> Promise<void>
 }
 
-export const DeleteVacationModal = ({ isOpened, id, onClose }: ModalProps) => {
+export const DeleteVacationModal = ({ isOpened, id, onClose, refresh }: ModalProps) => {
   const user = useAppSelector(selectUser);
   const [open, setOpen] = useState(isOpened);
 
@@ -61,7 +62,9 @@ export const DeleteVacationModal = ({ isOpened, id, onClose }: ModalProps) => {
   }, [isOpened]);
 
   const handleDeleteVacation = async (id: string) => {
+
     await deleteVacationService(id, user.token);
+    refresh()
     handleClose();
   };
 
