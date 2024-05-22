@@ -149,8 +149,8 @@ export const followVacationLogic = async (req: Request, vacationId: string) => {
                     { $pull: { vacationsFollowed: vacationId } },
                     { new: true },
                 )
-                const allVacations = getAllVacationsLogic(req)
-                resolve(allVacations)
+                const newLoggedUser = await User.findOne({ email: currentUser.email }) as UserType
+                resolve(newLoggedUser)
             } catch (error) {
                 reject(UnauthorizedError('Failed to updating profile user'))
             }
@@ -169,8 +169,8 @@ export const followVacationLogic = async (req: Request, vacationId: string) => {
                     { $push: { vacationsFollowed: vacationId } },
                     { new: true },
                 )
-                const allVacations = getAllVacationsLogic(req)
-                resolve(allVacations)
+                const newLoggedUser = await User.findOne({ email: currentUser.email }) as UserType
+                resolve(newLoggedUser)
             } catch (error) {
                 reject(UnauthorizedError('Failed to updating profile user'))
             }
