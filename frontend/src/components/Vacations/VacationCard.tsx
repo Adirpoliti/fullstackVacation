@@ -18,7 +18,7 @@ import {
   Box,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../App/hooks";
-import { selectUser } from "../../App/features/usersSlice";
+import { clearUser, selectUser, setUser, updateUser } from "../../App/features/usersSlice";
 import { useNavigate } from "react-router-dom";
 import { followVacationService } from "../../services/vacationServices/followVacation";
 import { DeleteVacationModal } from "./DeleteVacationModal";
@@ -115,15 +115,17 @@ export const VacationCard = ({
   const user = useAppSelector(selectUser);
   const [isFavorite, setIsFavotite] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  // const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch()
 
   const handleFavoriteClick = async (id: string) => {
-    setIsFavotite(!isFavorite);
-    const newUser = await followVacationService(id, user.token);
-    console.log(newUser);
-    // dispatch(clearUser())
-    // dispatch(setUser(newUser))
-  };
+    try {
+        const newUser = await followVacationService(id, user.token);
+        setIsFavotite(!isFavorite);
+        dispatch(updateUser({ vacationsFollowed: newUser.vacationsFollowed }));
+    } catch (error) {
+        console.error("Error toggling favorite:", error);
+    }
+};
 
   const handleEditVacation = (id: string) => {
     navigate("/editvacation", { state: { id } });

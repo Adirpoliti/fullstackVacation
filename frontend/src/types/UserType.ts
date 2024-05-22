@@ -22,5 +22,6 @@ export type UserType = {
         lastName: string;
         email: string;
         role: RoleType;
+        vacationsFollowed: Object[] | [];
     }
 }
