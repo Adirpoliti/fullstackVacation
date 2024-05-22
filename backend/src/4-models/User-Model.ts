@@ -15,6 +15,7 @@ export interface UserContainer {
     lastName: any;
     email: any;
     role: any;
+    vacationsFollowed: any[];
 }
 
 export type UserCredentialsType = {

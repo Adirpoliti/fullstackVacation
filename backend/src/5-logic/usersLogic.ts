@@ -25,6 +25,7 @@ export const registerUserLogic = async (newUser: UserType) => {
     if (findUser) return "Email already exist"
     validateUser(newUser)
     newUser.role = 'user';
+    newUser.vacationsFollowed = [];
     return new Promise((resolve, reject) => {
         User.insertMany(newUser as UserType)
             .then(() => {
