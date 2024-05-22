@@ -13,6 +13,7 @@ const defaultUser: UserType = {
     lastName: "",
     email: "",
     role: RoleType.User,
+    vacationsFollowed: [],
   },
 };
 
@@ -41,6 +42,10 @@ export const userSlice = createSlice({
       state.user = action.payload;
       localStorage.setItem('user', JSON.stringify(state.user));
     },
+    updateUser: (state, action: PayloadAction<Partial<UserType['registeredUser']>>) => {
+      state.user.registeredUser = { ...state.user.registeredUser, ...action.payload };
+      localStorage.setItem('user', JSON.stringify(state.user));
+    },
     clearUser: (state) => {
       state.user = defaultUser;
       localStorage.removeItem('user');
@@ -52,7 +57,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, updateUserToken } = userSlice.actions;
+export const { setUser, updateUser, clearUser, updateUserToken } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user.user;
 
