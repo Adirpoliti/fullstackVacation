@@ -10,11 +10,27 @@ import { createCsvService } from "../../services/vacationServices/createCsv";
 
 const ChartContainer = styled(Box)({
   display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
   backgroundColor: "#191919",
   marginTop: "100px",
-  paddingTop: "150px"
+  paddingTop: "150px",
+});
+
+const CSVBtn = styled(Button)({
+  backgroundColor: "#292929",
+  color: "#c0c0c0",
+  marginBottom: "30px",
+  width: "200px",
+  height: "45px",
+  borderRadius: "5px",
+  fontFamily: "tripSans",
+  fontSize: "16px",
+  "&:hover": {
+    backgroundColor: "#29cedd",
+    color: "black",
+  },
 });
 
 export default function ChartsOverviewDemo() {
@@ -44,65 +60,69 @@ export default function ChartsOverviewDemo() {
 
   const followers = vacations.map((country) => country.usersFollowed.length);
 
-  const updatedVacations = vacations.map(v => ({
+  const updatedVacations = vacations.map((v) => ({
     locationCountry: v.locationCountry,
     usersFollowed: v.usersFollowed.length,
-  }))
+  }));
 
   const date = new Date();
 
   const sendToCsv = async () => {
-      try {
-        const currentDate = date.toLocaleString().replace(/[.:]/g, '_');
-          await createCsvService(updatedVacations, currentDate, user.token);
-      } catch (err) {
-          console.error("Error creating CSV:", err);
-      }
+    try {
+      const currentDate = date.toLocaleString().replace(/[.:]/g, "_");
+      await createCsvService(updatedVacations, currentDate, user.token);
+    } catch (err) {
+      console.error("Error creating CSV:", err);
+    }
   };
 
   return (
     <ChartContainer>
-      {user.registeredUser.role === "admin" ?
-        <BarChart
-          sx={{
-            ".MuiChartsAxis-line": {
-              stroke: "white !important",
-            },
-            ".MuiChartsAxis-tick": {
-              stroke: "white !important",
-            },
-          }}
-          xAxis={[
-            {
-              scaleType: "band",
-              data: [...seriesData],
-              colorMap: {
-                type: "piecewise",
-                thresholds: [new Date(2021, 1, 1), new Date(2023, 1, 1)],
-                colors: ["#29cedd"],
+      {user.registeredUser.role === "admin" ? (
+        <>
+          <CSVBtn onClick={() => sendToCsv()}>Download CSV</CSVBtn>
+          <BarChart
+            sx={{
+              ".MuiChartsAxis-line": {
+                stroke: "white !important",
               },
-              tickLabelStyle: {
-                angle: 45,
-                textAnchor: "start",
-                fontSize: 15,
-                fill: "white",
+              ".MuiChartsAxis-tick": {
+                stroke: "white !important",
               },
-            },
-          ]}
-          yAxis={[
-            {
-              tickLabelStyle: {
-                fontSize: 15,
-                fill: "white",
+            }}
+            xAxis={[
+              {
+                scaleType: "band",
+                data: [...seriesData],
+                colorMap: {
+                  type: "piecewise",
+                  thresholds: [new Date(2021, 1, 1), new Date(2023, 1, 1)],
+                  colors: ["#29cedd"],
+                },
+                tickLabelStyle: {
+                  angle: 45,
+                  textAnchor: "start",
+                  fontSize: 15,
+                  fill: "white",
+                },
               },
-            },
-          ]}
-          series={[{ data: [...followers] }]}
-          width={1000}
-          height={500}
-        />
-        : <Navigate to="/" />}
-      <Button onClick={() => sendToCsv()}>Hello</Button>
+            ]}
+            yAxis={[
+              {
+                tickLabelStyle: {
+                  fontSize: 15,
+                  fill: "white",
+                },
+              },
+            ]}
+            series={[{ data: [...followers] }]}
+            width={1000}
+            height={500}
+          />
+        </>
+      ) : (
+        <Navigate to="/" />
+      )}
     </ChartContainer>
   );
 }

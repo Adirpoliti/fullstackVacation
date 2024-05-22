@@ -43,7 +43,8 @@ const StyledPagination = styled(Pagination)({
     border: "1px solid #292929",
   },
   "& .MuiPaginationItem-previousNext": {
-    color: "#c0c0c0"
+    color: "#c0c0c0",
+    border: "none",
   },
   "& .Mui-selected": {
     backgroundColor: "#c0c0c0 !important",

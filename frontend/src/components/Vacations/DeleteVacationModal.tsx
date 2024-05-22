@@ -31,7 +31,7 @@ const ModalText = styled(Typography)({
 const ModalBtn = styled(Button)({
   color: "white",
   fontSize: "20px",
-  backgroundColor: "#191919",
+  backgroundColor: "#292929",
   margin: "10px 10px 0 10px",
   borderRadius: "5px",
   fontFamily: "tripSans",
