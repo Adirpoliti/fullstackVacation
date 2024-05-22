@@ -12,16 +12,14 @@ const HomeBox = styled(Box)({
   height: "100vh",
   display: "flex",
   flexDirection: "column",
-  padding: "150px",
+  paddingTop: "150px",
 });
 
 const CardsBox = styled(Box)({
   display: "flex",
   flexWrap: "wrap",
-  padding: "20px",
   width: "100%",
   boxSizing: "border-box",
-  gap: "10px",
   justifyContent: "center",
 });
 
@@ -33,6 +31,26 @@ const FilterBox = styled(Box)({
   boxSizing: "border-box",
 });
 
+const PaginationBox = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+});
+
+const StyledPagination = styled(Pagination)({
+  margin: "10px",
+  "& .MuiPaginationItem-page": {
+    color: "white",
+    border: "1px solid #292929",
+  },
+  "& .MuiPaginationItem-previousNext": {
+    color: "#c0c0c0"
+  },
+  "& .Mui-selected": {
+    backgroundColor: "#c0c0c0 !important",
+    color: "#191919"
+  }
+});
+
 export const HomePage = () => {
   const [vacations, setVacations] = useState<VacationType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,7 +59,11 @@ export const HomePage = () => {
   const vacationsPerPage = 10;
   const indexOfLastVacation = currentPage * vacationsPerPage;
   const indexOfFirstVacation = indexOfLastVacation - vacationsPerPage;
-  const currentVacations = vacations.slice(indexOfFirstVacation, indexOfLastVacation);
+  const currentVacations = vacations.slice(
+    indexOfFirstVacation,
+    indexOfLastVacation
+  );
+
   const getAllVacations = async () => {
     try {
       const AllVacations = await getAllVacationsService(user.token);
@@ -50,13 +72,15 @@ export const HomePage = () => {
       console.log("error");
     }
   };
+
   useEffect(() => {
- 
-
     getAllVacations();
-  },[user.token]);
+  }, []);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     setCurrentPage(value);
   };
 
@@ -93,14 +117,14 @@ export const HomePage = () => {
           <Navigate to="/" />
         )}
       </CardsBox>
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-        <Pagination
+      <PaginationBox>
+        <StyledPagination
           count={Math.ceil(vacations.length / vacationsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           variant="outlined"
         />
-      </Box>
+      </PaginationBox>
     </HomeBox>
   );
 };
