@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Box, Typography, styled, Pagination } from "@mui/material";
+import { Box, Typography, styled, Pagination, Button } from "@mui/material";
 import { getAllVacationsService } from "../services/vacationServices/getVacations";
 import { VacationType } from "../types/VacationType";
 import { useAppSelector } from "../App/hooks";
 import { selectUser } from "../App/features/usersSlice";
 import { VacationCard } from "./Vacations/VacationCard";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import {
+  activeVacationService,
+  inactiveVacationService,
+  followedVacationService,
+} from "../services/vacationServices/filterVacationService";
 
 const HomeBox = styled(Box)({
   height: "100vh",
@@ -85,6 +90,26 @@ export const HomePage = () => {
     setCurrentPage(value);
   };
 
+  const handleFilterVacations = async (filterType: string) => {
+    try {
+      let filteredVacations = [];
+      if (filterType === "active") {
+        filteredVacations = await activeVacationService(user.token);
+      } else if (filterType === "inactive") {
+        filteredVacations = await inactiveVacationService(user.token);
+      } else if (filterType === "followed") {
+        filteredVacations = await followedVacationService(user.token);
+        console.log(user)
+      }
+      else if (filterType === "all") {
+        filteredVacations = await getAllVacationsService(user.token);
+      }
+      setVacations(filteredVacations);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   return (
     <HomeBox>
       <FilterBox>
@@ -96,6 +121,10 @@ export const HomePage = () => {
           />
           Filter Vacations
         </Typography>
+        <Button onClick={() => handleFilterVacations("active")}>Active</Button>
+        <Button onClick={() => handleFilterVacations("inactive")}>Inactive</Button>
+        <Button onClick={() => handleFilterVacations("followed")}>Followed</Button>
+        <Button onClick={() => handleFilterVacations("all")}>Show All</Button>
       </FilterBox>
       <CardsBox>
         {user.token ? (
