@@ -128,7 +128,7 @@ export const VacationCard: React.FC<VacationCardProps> = ({
       const newUser = await followVacationService(id, user.token);
       setIsFavorite(!isFavorite);
       dispatch(updateUser({ vacationsFollowed: newUser.vacationsFollowed }));
-      await refresh(); // Refresh the list after following/unfollowing
+      await refresh(); 
     } catch (error) {
       console.error("Error toggling favorite:", error);
     }
