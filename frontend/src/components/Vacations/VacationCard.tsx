@@ -18,7 +18,7 @@ import {
   Box,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../App/hooks";
-import { clearUser, selectUser, setUser, updateUser } from "../../App/features/usersSlice";
+import { selectUser, updateUser } from "../../App/features/usersSlice";
 import { useNavigate } from "react-router-dom";
 import { followVacationService } from "../../services/vacationServices/followVacation";
 import { DeleteVacationModal } from "./DeleteVacationModal";
@@ -90,16 +90,21 @@ const CardHeaderBox = styled(Box)({
   justifyContent: "space-between",
   alignItems: "baseline",
   height: "130px",
-})
+});
 
 const StyledIconBtn = styled(IconButton)({
   fontFamily: "tripSans",
   color: "white",
   fontSize: "18px",
   gap: "5px",
-})
+});
 
-export const VacationCard = ({
+interface VacationCardProps extends VacationType {
+  isFollowed: boolean;
+  refresh: () => Promise<void>;
+}
+
+export const VacationCard: React.FC<VacationCardProps> = ({
   locationCity,
   locationCountry,
   startDate,
@@ -109,23 +114,25 @@ export const VacationCard = ({
   imageName,
   _id,
   usersFollowed,
-  refresh
-}: VacationType) => {
+  isFollowed,
+  refresh,
+}) => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
-  const [isFavorite, setIsFavotite] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(isFollowed);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handleFavoriteClick = async (id: string) => {
     try {
-        const newUser = await followVacationService(id, user.token);
-        setIsFavotite(!isFavorite);
-        dispatch(updateUser({ vacationsFollowed: newUser.vacationsFollowed }));
+      const newUser = await followVacationService(id, user.token);
+      setIsFavorite(!isFavorite);
+      dispatch(updateUser({ vacationsFollowed: newUser.vacationsFollowed }));
+      await refresh(); // Refresh the list after following/unfollowing
     } catch (error) {
-        console.error("Error toggling favorite:", error);
+      console.error("Error toggling favorite:", error);
     }
-};
+  };
 
   const handleEditVacation = (id: string) => {
     navigate("/editvacation", { state: { id } });
@@ -186,10 +193,14 @@ export const VacationCard = ({
             {user.registeredUser.role === "admin" && (
               <>
                 <IconButton onClick={() => handleEditVacation(_id)}>
-                  <EditOutlinedIcon style={{ color: "#818181", fontSize: "20px" }} />
+                  <EditOutlinedIcon
+                    style={{ color: "#818181", fontSize: "20px" }}
+                  />
                 </IconButton>
                 <IconButton onClick={handleDeleteVacation}>
-                  <DeleteOutlineIcon style={{ color: "#818181", fontSize: "20px" }} />
+                  <DeleteOutlineIcon
+                    style={{ color: "#818181", fontSize: "20px" }}
+                  />
                 </IconButton>
               </>
             )}
@@ -203,7 +214,7 @@ export const VacationCard = ({
           title={locationCountry + " , " + locationCity}
           style={{ borderTopLeftRadius: "5px", borderTopRightRadius: "5px" }}
         />
-        <CardContent sx={{padding: "16px 16px 0px 16px"}}>
+        <CardContent sx={{ padding: "16px 16px 0px 16px" }}>
           <CardsDescription variant="body2" color="text.secondary">
             {description}
           </CardsDescription>

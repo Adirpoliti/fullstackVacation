@@ -48,8 +48,8 @@ const StyledPagination = styled(Pagination)({
   },
   "& .Mui-selected": {
     backgroundColor: "#c0c0c0 !important",
-    color: "#191919"
-  }
+    color: "#191919",
+  },
 });
 
 export const HomePage = () => {
@@ -65,7 +65,7 @@ export const HomePage = () => {
     indexOfLastVacation
   );
 
-  const getAllVacations = async () => {
+  const getAllVacations = async (): Promise<void> => {
     try {
       const AllVacations = await getAllVacationsService(user.token);
       setVacations(AllVacations);
@@ -111,6 +111,7 @@ export const HomePage = () => {
               price={v.price}
               imageName={v.imageName}
               usersFollowed={v.usersFollowed}
+              isFollowed={user.registeredUser.vacationsFollowed.includes(v._id)}
               refresh={getAllVacations}
             />
           ))
