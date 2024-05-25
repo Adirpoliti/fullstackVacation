@@ -62,7 +62,6 @@ export const DeleteVacationModal = ({ isOpened, id, onClose, refresh }: ModalPro
   }, [isOpened]);
 
   const handleDeleteVacation = async (id: string) => {
-
     await deleteVacationService(id, user.token);
     refresh()
     handleClose();
