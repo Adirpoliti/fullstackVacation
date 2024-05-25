@@ -38,7 +38,6 @@ const AnotherMainContainer = styled(Box)({
   height: "520px",
   width: "400px",
   borderRadius: "15px",
-  // padding: "10px",
   boxSizing: "border-box",
 });
 
