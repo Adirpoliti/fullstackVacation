@@ -5,8 +5,4 @@ import { VacationPostType } from "../../types/VacationType";
 export const addNewVacationService = async (newVacation: VacationPostType, token: string) => {  
     return axios
       .post(apiConfig.apiNewVacationPath, newVacation, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }})
-      .then((res) => res.data)
-      .catch((err) => {
-        console.log(err);
-      });
   };

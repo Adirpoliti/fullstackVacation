@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Box, Typography, styled, Pagination, Button } from "@mui/material";
+import { Box, styled, Pagination } from "@mui/material";
 import { getAllVacationsService } from "../services/vacationServices/getVacations";
 import { VacationType } from "../types/VacationType";
 import { useAppSelector } from "../App/hooks";
 import { selectUser } from "../App/features/usersSlice";
 import { VacationCard } from "./Vacations/VacationCard";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import {
   activeVacationService,
   inactiveVacationService,
   followedVacationService,
 } from "../services/vacationServices/filterVacationService";
 import { Toaster } from "react-hot-toast";
+import FilterBox from "./FilterBox";
 
 const HomeBox = styled(Box)({
   height: "100vh",
   display: "flex",
   flexDirection: "column",
-  paddingTop: "200px",
+  paddingTop: "150px",
 });
 
 const CardsBox = styled(Box)({
@@ -29,7 +29,7 @@ const CardsBox = styled(Box)({
   justifyContent: "center",
 });
 
-const FilterBox = styled(Box)({
+const StyledFilterBox = styled(Box)({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -73,7 +73,7 @@ export const HomePage = () => {
 
   const getAllVacations = async (): Promise<void> => {
     try {
-      if (user?.token) {
+      if (user.token) {
         const AllVacations = await getAllVacationsService(user.token);
         setVacations(AllVacations);
       }
@@ -96,7 +96,7 @@ export const HomePage = () => {
   const handleFilterVacations = async (filterType: string) => {
     try {
       let filteredVacations = [];
-      if (user?.token) {
+      if (user.token) {
         if (filterType === "active") {
           filteredVacations = await activeVacationService(user?.token);
         } else if (filterType === "inactive") {
@@ -116,23 +116,19 @@ export const HomePage = () => {
 
   return (
     <HomeBox>
-      <Toaster position="top-center" reverseOrder={true} />
-      <FilterBox>
-        <FilterAltIcon sx={{ fontSize: "20px", color: "white" }} />
-        <Typography
-          sx={{ textAlign: "center", color: "white", fontFamily: "tripSans" }}
-        >
-          Filter Vacations:
-        </Typography>
-        <Button onClick={() => handleFilterVacations("all")}>Show All</Button>
-        <Button onClick={() => handleFilterVacations("active")}>Active</Button>
-        <Button onClick={() => handleFilterVacations("inactive")}>
-          Inactive
-        </Button>
-        <Button onClick={() => handleFilterVacations("followed")}>
-          Followed
-        </Button>
-      </FilterBox>
+      <Toaster
+        toastOptions={{ style: { zIndex: 2000 } }}
+        position="top-center"
+        reverseOrder={false}
+      />
+      <StyledFilterBox>
+        <FilterBox
+          allVacations={() => handleFilterVacations("all")}
+          activeVacations={() => handleFilterVacations("active")}
+          inactiveVacations={() => handleFilterVacations("inactive")}
+          followedVacations={() => handleFilterVacations("followed")}
+        />
+      </StyledFilterBox>
       <CardsBox>
         {user?.token ? (
           currentVacations.map((v, i) => (

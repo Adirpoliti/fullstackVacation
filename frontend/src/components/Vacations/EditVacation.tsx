@@ -19,6 +19,7 @@ import { selectUser } from "../../App/features/usersSlice";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getOneVacationService } from "../../services/vacationServices/getOneVacation";
 import { editVacationService } from "../../services/vacationServices/editVacation";
+import toast, { Toaster } from "react-hot-toast";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -135,32 +136,57 @@ export const EditVacation = () => {
   };
 
   let newVacationScheme = object({
-    locationCountry: string().required().min(2),
-    locationCity: string().required().min(2),
-    description: string().required().min(2),
-    startDate: date().required().min(getMinDate()).max(ref("endDate")),
-    endDate: date().required().min(getMinDate()),
     price: number().required().positive().integer().max(10000),
+    endDate: date().required().min(getMinDate()),
+    startDate: date().required().min(getMinDate()).max(ref("endDate")),
+    description: string().required().min(2),
+    locationCity: string().required().min(2),
+    locationCountry: string().required().min(2),
   });
 
   const handleEditedVacation = async (editedVacation: VacationPostType) => {
-    try {
-      newVacationScheme.validate(editedVacation);
-      const betterVacation = {
-        _id: id,
-        locationCountry: editedVacation.locationCountry,
-        locationCity: editedVacation.locationCity,
-        description: editedVacation.description,
-        startDate: editedVacation.startDate,
-        endDate: editedVacation.endDate,
-        price: editedVacation.price,
-        imageFile: editedVacation.imageFile[0],
-      };
-      await editVacationService(betterVacation, user.token);
-      navigate("/home");
-    } catch (err) {
-      console.log(err);
-    }
+    newVacationScheme
+      .validate(editedVacation)
+      .then(async () => {
+        const betterVacation = {
+          _id: id,
+          locationCountry: editedVacation.locationCountry,
+          locationCity: editedVacation.locationCity,
+          description: editedVacation.description,
+          startDate: editedVacation.startDate,
+          endDate: editedVacation.endDate,
+          price: editedVacation.price,
+          imageFile: editedVacation.imageFile[0],
+        };
+        await editVacationService(betterVacation, user.token)
+          .then(() => {
+            toast.success("Vacation was edited successfully!", {
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            });
+            navigate("/home");
+          })
+          .catch((err) => {
+            toast.error(err.response.data, {
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            });
+          });
+      })
+      .catch((err) => {
+        err.errors.map((error: string) => {
+          toast.error(error, {
+            style: {
+              background: "#333",
+              color: "#fff",
+            },
+          });
+        });
+      });
   };
 
   useEffect(() => {
@@ -185,83 +211,92 @@ export const EditVacation = () => {
 
   return (
     <>
-      {user.registeredUser.role === "admin" ? <MainContainer>
-        <AnotherMainContainer>
-          <Box style={{ marginBottom: "20px" }}>
-            <EditVacTitle>Edit Vacation</EditVacTitle>
-          </Box>
-          <form onSubmit={handleSubmit(handleEditedVacation)}>
-            <Box>
-              <EditInputTitle>Destination Country</EditInputTitle>
-              <EditVacationInput
-                {...register("locationCountry", { required: true })}
-              />
+      {user.registeredUser.role === "admin" ? (
+        <MainContainer>
+          <Toaster
+            toastOptions={{ style: { zIndex: 2000 } }}
+            position="top-center"
+            reverseOrder={false}
+          />
+          <AnotherMainContainer>
+            <Box style={{ marginBottom: "20px" }}>
+              <EditVacTitle>Edit Vacation</EditVacTitle>
             </Box>
-            <Box>
-              <EditInputTitle>Destination City</EditInputTitle>
-              <EditVacationInput
-                {...register("locationCity", { required: true })}
-              />
-            </Box>
-            <Box>
-              <EditInputTitle>Description</EditInputTitle>
-              <EditVacationDescInput
-                multiline
-                rows={3}
-                {...register("description", { required: true })}
-              />
-            </Box>
-            <Box>
-              <EditInputTitle>Start on</EditInputTitle>
-              <EditVacationInput
-                type="date"
-                {...register("startDate", { required: true })}
-              />
-            </Box>
-            <Box>
-              <EditInputTitle>End on</EditInputTitle>
-              <EditVacationInput
-                type="date"
-                {...register("endDate", { required: true })}
-              />
-            </Box>
-            <Box>
-              <EditInputTitle>Price</EditInputTitle>
-              <EditVacationInput
-                type="number"
-                startAdornment={
-                  <InputAdornment position="start">
-                    <AttachMoneyIcon sx={{ color: "#292929" }} />
-                  </InputAdornment>
-                }
-                {...register("price", { required: true })}
-              />
-            </Box>
-            <Box>
-              <EditInputTitle>Cover image</EditInputTitle>
-              <ImgBox>
-                <img
-                  width={250}
-                  alt="country"
-                  src={`http://localhost:3001/images/${editedVacationState?.imageName}`}
+            <form onSubmit={handleSubmit(handleEditedVacation)}>
+              <Box>
+                <EditInputTitle>Destination Country</EditInputTitle>
+                <EditVacationInput
+                  {...register("locationCountry", { required: true })}
                 />
-              </ImgBox>
-              <FileBtn
-                fullWidth
-                component="label"
-                startIcon={<CloudUploadIcon />}
-              >
-                Upload Picture
-                <VisuallyHiddenInput
-                  type="file"
-                  {...register("imageFile", { required: false })}
+              </Box>
+              <Box>
+                <EditInputTitle>Destination City</EditInputTitle>
+                <EditVacationInput
+                  {...register("locationCity", { required: true })}
                 />
-              </FileBtn>
-            </Box>
-            <EditVacationBtn type="submit">Save Vacation</EditVacationBtn>
-          </form>
-        </AnotherMainContainer>
-      </MainContainer> : <Navigate to ="/" />}
+              </Box>
+              <Box>
+                <EditInputTitle>Description</EditInputTitle>
+                <EditVacationDescInput
+                  multiline
+                  rows={3}
+                  {...register("description", { required: true })}
+                />
+              </Box>
+              <Box>
+                <EditInputTitle>Start on</EditInputTitle>
+                <EditVacationInput
+                  type="date"
+                  {...register("startDate", { required: true })}
+                />
+              </Box>
+              <Box>
+                <EditInputTitle>End on</EditInputTitle>
+                <EditVacationInput
+                  type="date"
+                  {...register("endDate", { required: true })}
+                />
+              </Box>
+              <Box>
+                <EditInputTitle>Price</EditInputTitle>
+                <EditVacationInput
+                  type="number"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <AttachMoneyIcon sx={{ color: "#292929" }} />
+                    </InputAdornment>
+                  }
+                  {...register("price", { required: true })}
+                />
+              </Box>
+              <Box>
+                <EditInputTitle>Cover image</EditInputTitle>
+                <ImgBox>
+                  <img
+                    width={250}
+                    alt="country"
+                    src={`http://localhost:3001/images/${editedVacationState?.imageName}`}
+                  />
+                </ImgBox>
+                <FileBtn
+                  fullWidth
+                  component="label"
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Upload Picture
+                  <VisuallyHiddenInput
+                    type="file"
+                    {...register("imageFile", { required: false })}
+                  />
+                </FileBtn>
+              </Box>
+              <EditVacationBtn type="submit">Save Vacation</EditVacationBtn>
+            </form>
+          </AnotherMainContainer>
+        </MainContainer>
+      ) : (
+        <Navigate to="/" />
+      )}
     </>
   );
 };

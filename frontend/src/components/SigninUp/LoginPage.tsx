@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { setUser } from "../../App/features/usersSlice";
 import { useAppDispatch } from "../../App/hooks";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -123,33 +124,58 @@ export const LoginPage = ({ onClick }: LoginProp) => {
     /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
 
   let userLoginScheme = object({
-    email: string().required().min(12).max(254).matches(emailRegexPattern),
     password: string().required().min(8).max(32).matches(passwordRegexPattern),
+    email: string().required().min(12).max(254).matches(emailRegexPattern),
   });
 
   const validateUser = async (userCreds: UserLoginCredentialsType) => {
-    try {
-      userLoginScheme.validate(userCreds);
-      const user = await loginService(userCreds);
-      console.log(user);
-      dispatch(setUser(user));
-      reset();
-      navigate("/home");
-    } catch (error) {
-      if ((error as { name: string }).name === "ValidationError") {
-        console.log(
-          "Validation failed:",
-          (error as { errors: string[] }).errors
-        );
-      } else {
-        console.log("Login failed:", error);
-      }
-    }
+    userLoginScheme
+      .validate(userCreds)
+      .then(async () => {
+        await loginService(userCreds)
+          .then((res) => {
+            dispatch(setUser(res.data));
+            reset();
+            const prettyName =
+              res.data.registeredUser.firstName.charAt(0).toUpperCase() +
+              res.data.registeredUser.firstName.substring(1);
+
+            toast(`Welcome ${prettyName}`, {
+              icon: "👋",
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            });
+            navigate("/home");
+          })
+          .catch((err) => {
+            toast.error(err.response.data.message, {
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            });
+          });
+      })
+      .catch((err) => {
+        toast.error(err.message, {
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        });
+      });
   };
 
   return (
     <>
       <MainContainer>
+        <Toaster
+          toastOptions={{ style: { zIndex: 2000 } }}
+          position="top-center"
+          reverseOrder={false}
+        />
         <AnotherMainContainer>
           <Box style={{ marginBottom: "20px" }}>
             <img alt="logo" style={imgStyle} src="/Assets/Images/logo.png" />

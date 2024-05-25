@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Button,
@@ -17,7 +17,8 @@ import { VacationPostType } from "../../types/VacationType";
 import { addNewVacationService } from "../../services/vacationServices/addNewVacation";
 import { useAppSelector } from "../../App/hooks";
 import { selectUser } from "../../App/features/usersSlice";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -89,13 +90,6 @@ const VacationBtn = styled(Button)({
   },
 });
 
-const AddedVacationText = styled(Typography)({
-  color: "green",
-  fontFamily: "tripSans",
-  fontSize: "18px",
-  textAlign: "center",
-});
-
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -119,9 +113,10 @@ const FileBtn = styled(Button)({
 }) as typeof Button;
 
 export const AddVacation = () => {
+  const navigate = useNavigate();
   const user = useAppSelector(selectUser);
-  const { register, handleSubmit, control, reset, watch } = useForm<VacationPostType>();
-  const [isVacationAdded, setIsVacationAdded] = useState<boolean>(false);
+  const { register, handleSubmit, control, reset, watch } =
+    useForm<VacationPostType>();
 
   const getMinDate = () => {
     const today = new Date();
@@ -131,41 +126,71 @@ export const AddVacation = () => {
   const startDate = watch("startDate");
 
   const newVacationSchema = object({
-    locationCountry: string().required().min(2),
-    locationCity: string().required().min(2),
-    description: string().required().min(2),
-    startDate: date()
-      .required("Start date is required")
-      .min(new Date(), "Start date cannot be before today"),
+    price: number().required().positive().integer().max(10000),
     endDate: date()
       .required("End date is required")
       .min(ref("startDate"), "End date cannot be before start date"),
-    price: number().required().positive().integer().max(10000),
+    startDate: date()
+      .required("Start date is required")
+      .min(new Date(), "Start date cannot be before today"),
+    description: string().required().min(2),
+    locationCity: string().required().min(2),
+    locationCountry: string().required().min(2),
   });
 
   const handleNewVacation = async (newVacation: VacationPostType) => {
-    try {
-      await newVacationSchema.validate(newVacation, { abortEarly: false });
-      const betterVacation = {
-        locationCountry: newVacation.locationCountry,
-        locationCity: newVacation.locationCity,
-        description: newVacation.description,
-        startDate: newVacation.startDate,
-        endDate: newVacation.endDate,
-        price: newVacation.price,
-        imageFile: newVacation.imageFile[0],
-      };
-      await addNewVacationService(betterVacation, user.token);
-      setIsVacationAdded(!isVacationAdded);
-      reset();
-    } catch (err) {
-      console.log(err);
-    }
+    newVacationSchema
+      .validate(newVacation, { abortEarly: false })
+      .then(async () => {
+        const betterVacation = {
+          locationCountry: newVacation.locationCountry,
+          locationCity: newVacation.locationCity,
+          description: newVacation.description,
+          startDate: newVacation.startDate,
+          endDate: newVacation.endDate,
+          price: newVacation.price,
+          imageFile: newVacation.imageFile[0],
+        };
+        await addNewVacationService(betterVacation, user.token)
+          .then((res) => {
+            toast.success("Vacation was added successfully!", {
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            });
+            reset();
+            navigate("/home");
+          })
+          .catch((err) => {
+            toast.error(err.response.data, {
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            });
+          });
+      })
+      .catch((err) => {
+        err.errors.map((error: string) => {
+          toast.error(error, {
+            style: {
+              background: "#333",
+              color: "#fff",
+            },
+          });
+        });
+      });
   };
 
   return (
     <>
       <MainContainer>
+        <Toaster
+          toastOptions={{ style: { zIndex: 2000 } }}
+          position="top-center"
+          reverseOrder={false}
+        />
         {user.registeredUser.role === "admin" ? (
           <AnotherMainContainer>
             <Box style={{ marginBottom: "20px" }}>
@@ -248,11 +273,6 @@ export const AddVacation = () => {
               </Box>
               <VacationBtn type="submit">Add Vacation</VacationBtn>
             </form>
-            {isVacationAdded && (
-              <AddedVacationText>
-                Vacation was added successfully! ☺
-              </AddedVacationText>
-            )}
           </AnotherMainContainer>
         ) : (
           <Navigate to="/" />

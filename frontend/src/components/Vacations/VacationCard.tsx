@@ -22,6 +22,7 @@ import { selectUser, updateUser } from "../../App/features/usersSlice";
 import { useNavigate } from "react-router-dom";
 import { followVacationService } from "../../services/vacationServices/followVacation";
 import { DeleteVacationModal } from "./DeleteVacationModal";
+import toast from "react-hot-toast";
 
 const VacationPriceBtn = styled(Button)({
   width: "100%",
@@ -125,10 +126,18 @@ export const VacationCard: React.FC<VacationCardProps> = ({
 
   const handleFavoriteClick = async (id: string) => {
     try {
-        const newUser = await followVacationService(id, user.token);
-        setIsFavorite(isFollowed);
-        dispatch(updateUser({ vacationsFollowed: newUser.vacationsFollowed }));
-        await refresh();
+      const newUser = await followVacationService(id, user.token);
+      setIsFavorite(isFollowed);
+      dispatch(updateUser({ vacationsFollowed: newUser.vacationsFollowed }));
+      if (!isFollowed) {
+        toast.success("Followed Vacation!", {
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        });
+      }
+      await refresh();
     } catch (error) {
       console.error("Error toggling favorite:", error);
     }

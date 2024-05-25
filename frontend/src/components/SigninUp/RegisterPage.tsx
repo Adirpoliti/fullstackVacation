@@ -20,6 +20,7 @@ import { registerService } from "../../services/userServices/registerService";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../App/hooks";
 import { setUser } from "../../App/features/usersSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const MainContainer = styled(Box)({
   display: "flex",
@@ -119,7 +120,7 @@ interface RegisterProp {
 }
 
 export const RegisterPage = ({ onClick }: RegisterProp) => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -138,25 +139,60 @@ export const RegisterPage = ({ onClick }: RegisterProp) => {
     /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
 
   let userRegistrationScheme = object({
-    firstName: string().required().min(2).max(12),
-    lastName: string().required().min(2).max(20),
-    email: string().required().min(12).max(254).matches(emailRegexPattern),
     password: string().required().min(8).max(32).matches(passwordRegexPattern),
+    email: string().required().min(12).max(254).matches(emailRegexPattern),
+    lastName: string().required().min(2).max(20),
+    firstName: string().required().min(2).max(12),
   });
 
   const validateUser = async (userCreds: UserRegisterCredentialsType) => {
-    userRegistrationScheme.validate(userCreds)
-      console.log(userCreds);
-      const user = await registerService(userCreds)
-      dispatch(setUser(user))
-      reset();
-      navigate("/home");
-  };
+    userRegistrationScheme
+      .validate(userCreds)
+      .then(async () => {
+        await registerService(userCreds)
+          .then((res) => {
+            dispatch(setUser(res.data));
+            reset();
+            const prettyName =
+              res.data.registeredUser.firstName.charAt(0).toUpperCase() +
+              res.data.registeredUser.firstName.substring(1);
 
+            toast(`Welcome ${prettyName}`, {
+              icon: "👋",
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            });
+            navigate("/home");
+          })
+          .catch((err) => {
+            toast.error(err.response.data.message, {
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            });
+          });
+      })
+      .catch((err) => {
+        toast.error(err.message, {
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        });
+      });
+  };
 
   return (
     <>
       <MainContainer>
+        <Toaster
+          toastOptions={{ style: { zIndex: 2000 } }}
+          position="top-center"
+          reverseOrder={false}
+        />
         <AnotherMainContainer>
           <Box style={{ marginBottom: "20px" }}>
             <img alt="logo" style={imgStyle} src="/Assets/Images/logo.png" />
