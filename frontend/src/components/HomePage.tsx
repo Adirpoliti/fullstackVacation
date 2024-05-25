@@ -12,12 +12,13 @@ import {
   inactiveVacationService,
   followedVacationService,
 } from "../services/vacationServices/filterVacationService";
+import { Toaster } from "react-hot-toast";
 
 const HomeBox = styled(Box)({
   height: "100vh",
   display: "flex",
   flexDirection: "column",
-  paddingTop: "150px",
+  paddingTop: "200px",
 });
 
 const CardsBox = styled(Box)({
@@ -32,7 +33,7 @@ const FilterBox = styled(Box)({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  padding: "30px",
+  padding: "10px",
   boxSizing: "border-box",
 });
 
@@ -72,8 +73,10 @@ export const HomePage = () => {
 
   const getAllVacations = async (): Promise<void> => {
     try {
-      const AllVacations = await getAllVacationsService(user.token);
-      setVacations(AllVacations);
+      if (user?.token) {
+        const AllVacations = await getAllVacationsService(user.token);
+        setVacations(AllVacations);
+      }
     } catch {
       console.log("error");
     }
@@ -93,18 +96,19 @@ export const HomePage = () => {
   const handleFilterVacations = async (filterType: string) => {
     try {
       let filteredVacations = [];
-      if (filterType === "active") {
-        filteredVacations = await activeVacationService(user.token);
-      } else if (filterType === "inactive") {
-        filteredVacations = await inactiveVacationService(user.token);
-      } else if (filterType === "followed") {
-        filteredVacations = await followedVacationService(user.token);
-        console.log(user)
+      if (user?.token) {
+        if (filterType === "active") {
+          filteredVacations = await activeVacationService(user?.token);
+        } else if (filterType === "inactive") {
+          filteredVacations = await inactiveVacationService(user?.token);
+        } else if (filterType === "followed") {
+          filteredVacations = await followedVacationService(user?.token);
+          console.log(user);
+        } else if (filterType === "all") {
+          filteredVacations = await getAllVacationsService(user?.token);
+        }
+        setVacations(filteredVacations);
       }
-      else if (filterType === "all") {
-        filteredVacations = await getAllVacationsService(user.token);
-      }
-      setVacations(filteredVacations);
     } catch (error) {
       console.log("error", error);
     }
@@ -112,22 +116,25 @@ export const HomePage = () => {
 
   return (
     <HomeBox>
+      <Toaster position="top-center" reverseOrder={true} />
       <FilterBox>
+        <FilterAltIcon sx={{ fontSize: "20px", color: "white" }} />
         <Typography
           sx={{ textAlign: "center", color: "white", fontFamily: "tripSans" }}
         >
-          <FilterAltIcon
-            sx={{ fontSize: "20px", color: "white", marginRight: "10px" }}
-          />
-          Filter Vacations
+          Filter Vacations:
         </Typography>
-        <Button onClick={() => handleFilterVacations("active")}>Active</Button>
-        <Button onClick={() => handleFilterVacations("inactive")}>Inactive</Button>
-        <Button onClick={() => handleFilterVacations("followed")}>Followed</Button>
         <Button onClick={() => handleFilterVacations("all")}>Show All</Button>
+        <Button onClick={() => handleFilterVacations("active")}>Active</Button>
+        <Button onClick={() => handleFilterVacations("inactive")}>
+          Inactive
+        </Button>
+        <Button onClick={() => handleFilterVacations("followed")}>
+          Followed
+        </Button>
       </FilterBox>
       <CardsBox>
-        {user.token ? (
+        {user?.token ? (
           currentVacations.map((v, i) => (
             <VacationCard
               key={i}

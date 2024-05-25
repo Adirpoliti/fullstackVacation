@@ -125,10 +125,10 @@ export const VacationCard: React.FC<VacationCardProps> = ({
 
   const handleFavoriteClick = async (id: string) => {
     try {
-      const newUser = await followVacationService(id, user.token);
-      setIsFavorite(!isFavorite);
-      dispatch(updateUser({ vacationsFollowed: newUser.vacationsFollowed }));
-      await refresh(); 
+        const newUser = await followVacationService(id, user.token);
+        setIsFavorite(isFollowed);
+        dispatch(updateUser({ vacationsFollowed: newUser.vacationsFollowed }));
+        await refresh();
     } catch (error) {
       console.error("Error toggling favorite:", error);
     }
@@ -182,7 +182,7 @@ export const VacationCard: React.FC<VacationCardProps> = ({
                 onClick={() => handleFavoriteClick(_id)}
                 aria-label="add to favorites"
               >
-                {isFavorite ? (
+                {isFollowed ? (
                   <FavoriteIcon style={{ color: "29cedd" }} />
                 ) : (
                   <FavoriteBorderOutlinedIcon style={{ color: "#818181" }} />
