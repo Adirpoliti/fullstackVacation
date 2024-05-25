@@ -13,6 +13,8 @@ import {
 } from "../services/vacationServices/filterVacationService";
 import { Toaster } from "react-hot-toast";
 import FilterBox from "./FilterBox";
+import { useRefresh } from "../components/RefreshContext";
+
 
 const HomeBox = styled(Box)({
   height: "100vh",
@@ -62,6 +64,7 @@ export const HomePage = () => {
   const [vacations, setVacations] = useState<VacationType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const user = useAppSelector(selectUser);
+  const { refreshTrigger } = useRefresh();
 
   const vacationsPerPage = 10;
   const indexOfLastVacation = currentPage * vacationsPerPage;
@@ -84,7 +87,7 @@ export const HomePage = () => {
 
   useEffect(() => {
     getAllVacations();
-  }, []);
+  }, [refreshTrigger]);
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -99,13 +102,17 @@ export const HomePage = () => {
       if (user.token) {
         if (filterType === "active") {
           filteredVacations = await activeVacationService(user?.token);
+          setCurrentPage(1)
         } else if (filterType === "inactive") {
           filteredVacations = await inactiveVacationService(user?.token);
+          setCurrentPage(1)
         } else if (filterType === "followed") {
           filteredVacations = await followedVacationService(user?.token);
+          setCurrentPage(1)
           console.log(user);
         } else if (filterType === "all") {
           filteredVacations = await getAllVacationsService(user?.token);
+          setCurrentPage(1)
         }
         setVacations(filteredVacations);
       }
