@@ -4,6 +4,7 @@ import { Box, Button, styled } from "@mui/material";
 import { selectUser } from "../App/features/usersSlice";
 import { useAppSelector } from "../App/hooks";
 import LogoutMenu from "./LogoutMenu";
+import { useRefresh } from "../components/RefreshContext";
 
 const NavbarContainer = styled(Box)({
   display: "flex",
@@ -31,10 +32,14 @@ const StyledNavbarBtn = styled(Button)({
 export const Navbar = () => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
+  const { toggleRefreshTrigger } = useRefresh();
 
   return user.token ? (
     <NavbarContainer>
-      <StyledNavbarBtn onClick={() => navigate("/home")}>All Vacations</StyledNavbarBtn>
+      <StyledNavbarBtn onClick={() => {
+        navigate("/home", { replace: true });
+        toggleRefreshTrigger();
+      }}>All Vacations</StyledNavbarBtn>
       {user.registeredUser.role === "admin" && (
         <StyledNavbarBtn onClick={() => navigate("/newvacation")} href="">
           New Vacation
