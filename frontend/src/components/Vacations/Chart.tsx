@@ -69,7 +69,7 @@ export default function ChartsOverviewDemo() {
 
   const sendToCsv = async () => {
     try {
-      const currentDate = date.toLocaleString().replace(/[.:]/g, "_");
+      const currentDate = date.toLocaleString().replace(/[./:]/g, "_");
       await createCsvService(updatedVacations, currentDate, user.token);
     } catch (err) {
       console.error("Error creating CSV:", err);

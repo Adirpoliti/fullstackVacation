@@ -7,7 +7,6 @@ import { UnauthorizedError } from "../4-models/ErrorModel";
 export const convertTableToCSV = async (req: Request, dynamicTable: object[], tableName: string, path: string) => {
     await getCurrentUser(req);
     validateCsv(tableName);
-    console.log(dynamicTable)
     try {
         const csvContent = Object.keys(dynamicTable[0]).join(',') + '\n' +
             dynamicTable.map(row => Object.values(row).join(',')).join('\n');
