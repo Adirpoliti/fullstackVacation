@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request } from 'express';
-import { userSecret } from "../2-utils/cyber";
+import { userSecret } from "../utils/cyber";
 
 export const verifyTokenUser = (request: Request): Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) => {

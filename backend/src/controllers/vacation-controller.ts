@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { addVacationLogic, deleteVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllFollowedVacationsLogic, getAllInactiveVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../5-logic/vacationLogic';
-import { VacationType } from '../4-models/Vacation-Model';
-import { verifyAdminMiddlewere } from '../3-middleware/verifyAdmin';
+import { addVacationLogic, deleteVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllFollowedVacationsLogic, getAllInactiveVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../logic/vacationLogic';
+import { VacationType } from '../models/Vacation-Model';
+import { verifyAdminMiddlewere } from '../middleware/verifyAdmin';
 
 const router = express.Router()
 

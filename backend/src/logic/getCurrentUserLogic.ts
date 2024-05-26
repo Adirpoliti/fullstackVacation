@@ -1,8 +1,8 @@
 import { Request } from "express";
 import jwt from "jsonwebtoken";
-import { verifyTokenUser } from "../3-middleware/verifyToken";
-import { UnauthorizedError } from "../4-models/ErrorModel";
-import { UserContainer, UserType } from "../4-models/User-Model";
+import { verifyTokenUser } from "../middleware/verifyToken";
+import { UnauthorizedError } from "../models/ErrorModel";
+import { UserContainer, UserType } from "../models/User-Model";
 
 export const getCurrentUser = async (request: Request): Promise<UserType> => {
     try {

@@ -1,6 +1,6 @@
-import { verifyAdminMiddlewere } from './../3-middleware/verifyAdmin';
+import { verifyAdminMiddlewere } from '../middleware/verifyAdmin';
 import express, { NextFunction, Request, Response } from 'express'
-import { convertTableToCSV } from '../5-logic/convertTableToCsv';
+import { convertTableToCSV } from '../logic/convertTableToCsv';
 
 const router = express.Router();
 

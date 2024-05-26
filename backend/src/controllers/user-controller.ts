@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { UserCredentialsType, UserType } from '../4-models/User-Model';
-import { loginUserLogic, registerUserLogic } from '../5-logic/usersLogic';
+import { UserCredentialsType, UserType } from '../models/User-Model';
+import { loginUserLogic, registerUserLogic } from '../logic/usersLogic';
 
 const router = express.Router()
 

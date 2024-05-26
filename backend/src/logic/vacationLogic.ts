@@ -1,10 +1,10 @@
 import { Request } from "express"
-import { User, Vacation } from "../2-utils/dal";
-import { ResourceNotFoundError, UnauthorizedError } from "../4-models/ErrorModel";
-import { VacationType, validateVacation, validateVacationUpdate } from "../4-models/Vacation-Model";
+import { User, Vacation } from "../utils/dal";
+import { ResourceNotFoundError, UnauthorizedError } from "../models/ErrorModel";
+import { VacationType, validateVacation, validateVacationUpdate } from "../models/Vacation-Model";
 import { v4 as uuid } from "uuid";
 import { getCurrentUser } from "./getCurrentUserLogic";
-import { UserType } from "../4-models/User-Model";
+import { UserType } from "../models/User-Model";
 
 export const getAllVacationsLogic = async (req: Request) => {
     try {
