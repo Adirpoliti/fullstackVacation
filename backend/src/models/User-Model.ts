@@ -47,7 +47,7 @@ export const userSchema = new mongoose.Schema({
 
 
 export const UserCredentialsValidationSchema = joi.object({
-    email: joi.string().required().min(12).max(254).regex(emailRegexPattern),
+    email: joi.string().required().min(12).max(254).regex(emailRegexPattern).message("must use capital letter, small letter, number, special characters, at least 8 characters"),
     password: joi.string().required(),
 })
 
