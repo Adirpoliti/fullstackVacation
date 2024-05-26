@@ -47,15 +47,15 @@ export const userSchema = new mongoose.Schema({
 
 
 export const UserCredentialsValidationSchema = joi.object({
-    email: joi.string().required().min(12).max(254).regex(emailRegexPattern),
+    email: joi.string().required().min(12).max(254).regex(emailRegexPattern).message("must contain something@something.something - required @ and ."),
     password: joi.string().required(),
 })
 
 export const UserValidationSchema = joi.object({
     firstName: joi.string().required().min(2).max(12),
     lastName: joi.string().required().min(2).max(20),
-    password: joi.string().required().min(8).max(32).regex(passwordRegexPattern),
-    email: joi.string().required().min(12).max(254).regex(emailRegexPattern),
+    password: joi.string().required().min(8).max(32).regex(passwordRegexPattern).message("must use capital letter, small letter, number, special characters, at least 8 characters"),
+    email: joi.string().required().min(12).max(254).regex(emailRegexPattern).message("must contain something@something.something - required @ and ."),
     role: joi.forbidden(),
     vacationsFollowed: joi.forbidden(),
 })
