@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-import { userSchema } from "../4-models/User-Model";
-import { vacationSchema } from "../4-models/Vacation-Model";
+import { userSchema } from "../models/User-Model";
+import { vacationSchema } from "../models/Vacation-Model";
 
 export const mangooseConnection = mongoose.connect('mongodb+srv://adirpoliti:RsveLODUOQ52kHo2@vacations.al16hwc.mongodb.net/',
     { useNewUrlParser: true, useUnifiedTopology: true })

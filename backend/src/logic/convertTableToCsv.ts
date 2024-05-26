@@ -1,8 +1,8 @@
 import fs from 'fs';
 import { Request } from "express"
 import { getCurrentUser } from "./getCurrentUserLogic";
-import { validateCsv } from "../4-models/CsvModel";
-import { UnauthorizedError } from "../4-models/ErrorModel";
+import { validateCsv } from "../models/CsvModel";
+import { UnauthorizedError } from "../models/ErrorModel";
 
 export const convertTableToCSV = async (req: Request, dynamicTable: object[], tableName: string, path: string) => {
     await getCurrentUser(req);

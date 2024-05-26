@@ -1,7 +1,7 @@
-import { UserCredentialsType, UserType, validateUser, validateUserCredentials } from "../4-models/User-Model";
-import { User } from "../2-utils/dal";
-import { getUserToken } from "../2-utils/cyber";
-import { UnauthorizedError } from "../4-models/ErrorModel";
+import { UserCredentialsType, UserType, validateUser, validateUserCredentials } from "../models/User-Model";
+import { User } from "../utils/dal";
+import { getUserToken } from "../utils/cyber";
+import { UnauthorizedError } from "../models/ErrorModel";
 
 export const loginUserLogic = async (credentials: UserCredentialsType) => {
     validateUserCredentials(credentials)

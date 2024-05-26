@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { errorData } from "../2-utils/logger";
+import { errorData } from "../utils/logger";
 
 export const catchAll = (err: any, req: Request, res: Response, next: NextFunction) => {
     errorData.log("error", err.message)

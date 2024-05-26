@@ -1,5 +1,5 @@
 import  jwt  from "jsonwebtoken";
-import { UserContainer, UserType } from "../4-models/User-Model";
+import { UserContainer, UserType } from "../models/User-Model";
 
 export const userSecret = "hash-token1";
 

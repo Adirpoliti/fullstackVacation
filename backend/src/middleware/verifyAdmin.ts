@@ -1,7 +1,7 @@
-import { UserContainer } from "../4-models/User-Model";
+import { UserContainer } from "../models/User-Model";
 import { NextFunction, Request, Response } from 'express';
 import jwt from "jsonwebtoken";
-import { UnauthorizedError } from "../4-models/ErrorModel";
+import { UnauthorizedError } from "../models/ErrorModel";
 
 export const verifyUserAdmin = async (req: Request): Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) => {
