@@ -70,21 +70,39 @@ export default function ChartsOverviewDemo() {
   const sendToCsv = async () => {
     try {
       const currentDate = date.toLocaleString().split(" ").join("").replace(/[./:]/g, "_");
-      console.log(currentDate)
+      console.log(currentDate);
       const response = await createCsvService(updatedVacations, currentDate, user.token);
       if (response.filePath) {
-        const link = document.createElement('a');
-        link.href = `http://localhost:3001/api${response.filePath}`;
-        console.log(link.href)
-        link.setAttribute('download', `${currentDate}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        fetch(`http://localhost:3001/api${response.filePath}`, {
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(blob);
+          link.href = url;
+          link.setAttribute('download', `${currentDate}.csv`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error('There has been a problem with your fetch operation:', error);
+        });
       }
-    } catch (err) {
-      console.error("Error creating CSV:", err);
+    } catch (error) {
+      console.error('Error in sendToCsv:', error);
     }
   };
+  
 
   return (
     <ChartContainer>
