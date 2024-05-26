@@ -14,7 +14,8 @@ const server = express()
 
 server.use(express.json())
 server.use(expressFileUpload());
-server.use('/images', express.static(path.join(__dirname, '1-Assets/images')));
+server.use('/images', express.static(path.join(__dirname, 'assets/images')));
+server.use('/csv', express.static(path.join(__dirname, 'assets/csv')));
 
 server.use(cors({
     origin: '*', 
