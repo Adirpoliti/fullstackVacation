@@ -69,8 +69,18 @@ export default function ChartsOverviewDemo() {
 
   const sendToCsv = async () => {
     try {
-      const currentDate = date.toLocaleString().replace(/[./:]/g, "_");
-      await createCsvService(updatedVacations, currentDate, user.token);
+      const currentDate = date.toLocaleString().split(" ").join("").replace(/[./:]/g, "_");
+      console.log(currentDate)
+      const response = await createCsvService(updatedVacations, currentDate, user.token);
+      if (response.filePath) {
+        const link = document.createElement('a');
+        link.href = `http://localhost:3001/api${response.filePath}`;
+        console.log(link.href)
+        link.setAttribute('download', `${currentDate}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     } catch (err) {
       console.error("Error creating CSV:", err);
     }
