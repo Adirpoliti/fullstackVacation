@@ -44,7 +44,7 @@ export const addVacationLogic = async (req: Request, newVacation: VacationType):
         if (newVacation.imageFile) {
             const extension = newVacation.imageFile.name.substring(newVacation.imageFile.name.lastIndexOf("."));
             newVacation.imageName = uuid() + extension
-            await newVacation.imageFile.mv("./src/1-Assets/images/" + newVacation.imageName);
+            await newVacation.imageFile.mv("./src/assets/images/" + newVacation.imageName);
             delete newVacation.imageFile
         }
         const addedVacation = await new Vacation({
@@ -72,7 +72,7 @@ export const editVacationLogic = async (req: Request, updatedVacation: VacationT
     if (updatedVacation.imageFile) {
         const extension = updatedVacation.imageFile.name.substring(updatedVacation.imageFile.name.lastIndexOf("."));
         updatedVacation.imageName = uuid() + extension
-        await updatedVacation.imageFile.mv("./src/1-Assets/images/" + updatedVacation.imageName);
+        await updatedVacation.imageFile.mv("./src/assets/images/" + updatedVacation.imageName);
         delete updatedVacation.imageFile
     }
     return new Promise(async (resolve, reject) => {
