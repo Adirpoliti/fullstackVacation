@@ -139,8 +139,8 @@ export const RegisterPage = ({ onClick }: RegisterProp) => {
     /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
 
   let userRegistrationScheme = object({
-    password: string().required().min(8).max(32).matches(passwordRegexPattern),
-    email: string().required().min(12).max(254).matches(emailRegexPattern),
+    password: string().required().min(8).max(32).matches(passwordRegexPattern, "Password must include capital letter, small letter, number, special characters and at least 8 characters long"),
+    email: string().email('Not a valid email').required().min(12, 'Email must be at least 12 characters long').max(254).matches(emailRegexPattern),
     lastName: string().required().min(2).max(20),
     firstName: string().required().min(2).max(12),
   });
