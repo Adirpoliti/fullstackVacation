@@ -7,6 +7,19 @@
 
     mongodb+srv://adirpoliti:RsveLODUOQ52kHo2@vacations.al16hwc.mongodb.net/
 
+// Docker Hub images:
+    BE Image:
+        Link:
+            https://hub.docker.com/repository/docker/adirpoliti/fullstack_vacation_backend/general
+        Pull:
+            docker pull adirpoliti/fullstack_vacation_backend
+
+    FE Image:
+        Link:
+            https://hub.docker.com/repository/docker/adirpoliti/fullstack_vacation_frontend/general
+        Pull:
+            docker pull adirpoliti/fullstack_vacation_frontend
+
 // Password Regex:
 
     must use capital letter, small letter, number, special characters, at least 8 characters
