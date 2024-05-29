@@ -10,9 +10,9 @@ export const activeVacationService = async (token: string) => {
       });
   };
 
-  export const inactiveVacationService = async (token: string) => {  
+  export const currentlyActiveVacationService = async (token: string) => {  
     return axios
-      .get(apiConfig.apiInactiveVacationPath, { headers: { Authorization: `Bearer ${token}` }})
+      .get(apiConfig.apiCurrentlyActiveVacationPath, { headers: { Authorization: `Bearer ${token}` }})
       .then((res) => res.data)
       .catch((err) => {
         console.log(err);

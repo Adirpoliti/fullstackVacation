@@ -10,7 +10,7 @@ import { selectUser } from "../App/features/usersSlice";
 interface FilterProps {
   allVacations: () => Promise<any>;
   activeVacations: () => Promise<any>;
-  inactiveVacations: () => Promise<any>;
+  currentlyActiveVacations: () => Promise<any>;
   followedVacations: () => Promise<any>;
 }
 
@@ -33,7 +33,7 @@ const StyledFilterMenuItem = styled(MenuItem)({
 export default function FilterBox({
   allVacations,
   activeVacations,
-  inactiveVacations,
+  currentlyActiveVacations,
   followedVacations,
 }: FilterProps) {
   const user = useAppSelector(selectUser);
@@ -81,10 +81,10 @@ export default function FilterBox({
         <StyledFilterMenuItem
           onClick={() => {
             handleClose();
-            inactiveVacations();
+            currentlyActiveVacations();
           }}
         >
-          Inactive Vacations
+          Currently Active Vacations
         </StyledFilterMenuItem>
         {user.registeredUser.role === "user" && (
           <StyledFilterMenuItem

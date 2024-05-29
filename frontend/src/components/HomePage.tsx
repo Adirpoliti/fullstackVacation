@@ -8,8 +8,8 @@ import { selectUser } from "../App/features/usersSlice";
 import { VacationCard } from "./Vacations/VacationCard";
 import {
   activeVacationService,
-  inactiveVacationService,
   followedVacationService,
+  currentlyActiveVacationService,
 } from "../services/vacationServices/filterVacationService";
 import { Toaster } from "react-hot-toast";
 import FilterBox from "./FilterBox";
@@ -103,8 +103,8 @@ export const HomePage = () => {
         if (filterType === "active") {
           filteredVacations = await activeVacationService(user?.token);
           setCurrentPage(1)
-        } else if (filterType === "inactive") {
-          filteredVacations = await inactiveVacationService(user?.token);
+        } else if (filterType === "currentlyActive") {
+          filteredVacations = await currentlyActiveVacationService(user?.token);
           setCurrentPage(1)
         } else if (filterType === "followed") {
           filteredVacations = await followedVacationService(user?.token);
@@ -132,7 +132,7 @@ export const HomePage = () => {
         <FilterBox
           allVacations={() => handleFilterVacations("all")}
           activeVacations={() => handleFilterVacations("active")}
-          inactiveVacations={() => handleFilterVacations("inactive")}
+          currentlyActiveVacations={() => handleFilterVacations("currentlyActive")}
           followedVacations={() => handleFilterVacations("followed")}
         />
       </StyledFilterBox>
