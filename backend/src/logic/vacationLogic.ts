@@ -108,12 +108,12 @@ export const getAllActiveVacationsLogic = async (req: Request) => {
     }
 }
 
-export const getAllInactiveVacationsLogic = async (req: Request) => {
+export const getAllCurrentActiveVacationsLogic = async (req: Request) => {
     try {
         await getCurrentUser(req)
         const today = new Date()
         const allVacations = await Vacation.find() as VacationType[];
-        const activeVacations = allVacations.filter((allVacations) => allVacations.startDate <= today);
+        const activeVacations = allVacations.filter((allVacations) => allVacations.startDate <= today && allVacations.endDate >= today);
         return activeVacations
     } catch (error) {
         UnauthorizedError('Failed to fetch the vacations !');

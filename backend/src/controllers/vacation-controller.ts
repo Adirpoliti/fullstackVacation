@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { addVacationLogic, deleteVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllFollowedVacationsLogic, getAllInactiveVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../logic/vacationLogic';
+import { addVacationLogic, deleteVacationLogic, editVacationLogic, followVacationLogic, getAllActiveVacationsLogic, getAllCurrentActiveVacationsLogic, getAllFollowedVacationsLogic, getAllVacationsLogic, getOneVacationLogic } from '../logic/vacationLogic';
 import { VacationType } from '../models/Vacation-Model';
 import { verifyAdminMiddlewere } from '../middleware/verifyAdmin';
 
@@ -23,9 +23,9 @@ router.get('/vacations/active', async (req: Request, res: Response, next: NextFu
     }
 });
 
-router.get('/vacations/inactive', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/vacations/currentlyActive', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const response = await getAllInactiveVacationsLogic(req);
+        const response = await getAllCurrentActiveVacationsLogic(req);
         res.json(response);
     } catch (err) {
         next(err);
