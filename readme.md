@@ -35,7 +35,7 @@
                 All - http://localhost:3001/api/vacations
                 One - http://localhost:3001/api/vacations/one/:id
                 Active - http://localhost:3001/api/vacations/active
-                Inactive - http://localhost:3001/api/vacations/inactive
+                Inactive - http://localhost:3001/api/vacations/currentlyActive
                 Followed - http://localhost:3001/api/vacations/followed
             Delete:
                 Remove - http://localhost:3001/api/vacations/remove/:id
